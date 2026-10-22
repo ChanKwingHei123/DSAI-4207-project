@@ -1,4 +1,4 @@
-# DSAI 4207 Introduction to Large Language Models (HKPolyU) - Does Irrelevant Context Hurt Small RAG Readers? A Controlled Dose-Response Study of Random vs. Topically Related Passages
+# DSAI 4207 - Does Irrelevant Context Hurt Small RAG Readers? A Controlled Dose-Response Study of Random vs. Topically Related Passages
 
 A standardized machine learning / data science repository skeleton.
 
