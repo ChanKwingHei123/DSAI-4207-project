@@ -1,7 +1,7 @@
 # Does Irrelevant Context Hurt Small RAG Readers? 
 ### A Controlled Dose-Response Study of Random vs. Topically Related Passages
 
-This repository forms the complete data apparatus and evaluation architecture for the **DSAI 4207 (HKPolyU)** project. It investigates the quantitative sensitivity of small RAG readers under varying volumetric doses of topically related (hard) vs. disjoint (random) distractor contexts.
+This repository forms the complete data apparatus and evaluation architecture for the **DSAI 4207 ** project. It investigates the quantitative sensitivity of small RAG readers under varying volumetric doses of topically related (hard) vs. disjoint (random) distractor contexts.
 
 ---
 
