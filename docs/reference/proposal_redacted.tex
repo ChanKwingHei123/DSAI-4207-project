@@ -1,0 +1,106 @@
+\documentclass[11pt]{article}
+
+% ---------- layout ----------
+\usepackage[margin=1in]{geometry}
+\usepackage{microtype}
+\usepackage{parskip}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+
+% ---------- style ----------
+\definecolor{PolyUBlue}{HTML}{1F4E79}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textcolor{PolyUBlue}{\textbf{DSAI 4207}}}
+\rhead{\textcolor{PolyUBlue}{\textbf{Project Proposal}}}
+\cfoot{\thepage}
+\setlength{\headheight}{14pt}
+
+\titleformat{\section}{\Large\bfseries\color{PolyUBlue}}{\thesection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{1.0em}{0.35em}
+\titleformat{\subsection}{\normalsize\bfseries\color{PolyUBlue}}{}{0pt}{}
+\titlespacing*{\subsection}{0pt}{0.6em}{0.2em}
+\setlist[itemize]{leftmargin=1.2em, topsep=0.2em, itemsep=0.15em}
+
+\begin{document}
+
+{\centering
+{\LARGE \textbf{Does Irrelevant Context Hurt Small RAG Readers?\\[0.1em]
+A Controlled Dose--Response Study of Random vs.\ Topically Related Passages}}\\[0.3em]
+{\large \textcolor{PolyUBlue}{\textit{DSAI 4207 Introduction to Large Language Models --- Course Project Proposal}}}\\[0.2em]
+{\normalsize \textit{Concept Note Format}}\\[0.5em]
+\par}
+
+\vspace{0.2em}
+\textcolor{PolyUBlue}{\rule{\linewidth}{0.8pt}}
+
+\section*{Project and Team Details}
+\begin{tabularx}{\linewidth}{@{}l X@{}}
+\toprule
+\textbf{Project type} & (C) Prompting, RAG \& agents \\
+\textbf{One-line thesis} & With the gold passage present, topically related irrelevant passages degrade small open-weight LLMs more than the same amount of random text, so the harm of imperfect retrieval is semantic rather than a mere context-length effect. \\
+\bottomrule
+\end{tabularx}
+
+\section{Problem Statement and Objective}
+Retrieval-augmented generation (RAG) grounds an LLM's answer in passages retrieved at query time~[1], but real retrievers return imperfect rankings, so the model must read context that is irrelevant to the question. The literature on how harmful this is points in different directions: irrelevant context can derail LLMs~[2], robustness often has to be trained in~[3], and yet random documents were reported to \emph{improve} accuracy while related-but-unhelpful ones hurt~[5]. These results come from different models, datasets and retrieval depths, and they rarely separate three factors that are entangled in a real retriever's output: how many irrelevant passages are present, how semantically similar they are to the query, and how much the prompt simply grows longer. The gap is sharpest for small open-weight models (4--9B parameters), which are the models that small-team RAG systems actually run.
+
+Our research question is: \emph{how do the number and type (random versus topically related ``hard negative'') of irrelevant passages in a RAG prompt affect the answer accuracy of small open-weight LLMs when the gold passage is present?} Our objective is to measure a dose--response curve for each type, using length-matched random passages as a control that isolates semantic distraction from context length.
+
+\textbf{Hypothesis (H1).} For the primary model, adding eight hard negatives to a gold-only context lowers accuracy by at least 5 percentage points, and by at least 3 points more than adding eight length-matched random passages, with 95\% confidence intervals excluding zero for both quantities. H1 is refuted if either margin is not met.
+
+\section{Related Work and Baselines}
+RAG~[1] is our starting point. Shi et al.~[2] showed that irrelevant context lowers LLM accuracy, Yoran et al.~[3] trained retrieval-augmented models to ignore it, and Liu et al.~[4] showed that the position of the answer within a long context matters. Cuconasu et al.~[5] found the surprising result that random documents can raise RAG accuracy while related distractors reduce it; we test this observation under tighter control on small models.
+
+We use three baselines, all with the same model, questions, prompt template, decoding settings and compute budget. \emph{Closed-book} (no passage) measures parametric knowledge and SQuAD contamination. \emph{Oracle} (gold passage only) is the reference against which every drop is computed. \emph{Length-matched random passages} are the control for hard negatives, so any gap between the two types cannot be explained by prompt length. Because every baseline differs from the treatment only in the manipulated context, differences are attributable to it.
+
+Our contribution is a new analysis, not a new method: a controlled dose--response design with a length-matched control, run on small open models on consumer hardware, with stratification by closed-book knowledge.
+
+\section{Proposed Method}
+\textbf{Setup.} Every SQuAD 2.0 question comes with its source paragraph, which we treat as the gold passage. Each prompt contains the question, the gold passage and $n\in\{0,1,2,4,8\}$ irrelevant passages. \emph{Hard negatives} are the top-ranked paragraphs for the question under a dense retriever (sentence-transformers \texttt{all-MiniLM-L6-v2} with a FAISS index over the dev-set paragraph pool), excluding the gold paragraph. \emph{Random passages} are sampled from other articles and matched, rank by rank, to the token length of the hard negatives (within $\pm$20\%). Gold position is randomized and logged, so position effects~[4] can be analyzed rather than assumed away. Two filters protect validity: no distractor may contain a normalized gold-answer string, and we manually audit at least 100 sampled hard-negative contexts for passages that validly answer an alternative reading of the question, dropping any flagged questions.
+
+\textbf{Decisive experiment.} On the primary model (Qwen3-8B), we compare three contexts per question under the standard prompt: gold only, gold plus 8 hard negatives, and gold plus 8 random passages, using paired differences over the same questions. If H1 holds, semantic similarity rather than length drives the damage, and rerankers should be judged on precision for topically close passages. If both drops exceed 5 points but their gap does not, harm is a volume effect and long contexts, not topicality, are the problem. If the hard-negative drop is under 2 points or its interval includes zero, small models are robust at this depth: a valid negative result, after which we escalate to $n=16$ and the 4B model to find the breaking point. If random passages \emph{raise} accuracy, we have reproduced~[5] on small models and will analyze why. Following the primary testing for H1, secondary analysis will compare model scale and family to study if the vulnerability is universal and results stratified by closed-book correctness to see if a model's pre-existing knowledge changes how it handles distractors.
+
+\section{Data, Models, Setup, and Evaluation}
+\textbf{Data.} SQuAD 2.0~[6] dev set, answerable questions only (CC BY-SA 4.0): 500 questions sampled stratified by article, plus a disjoint 50-question pilot set used only for prompt and throughput checks. \textbf{Models.} Qwen3-4B and Qwen3-8B~[7] (non-thinking mode) and Llama-3.1-8B-Instruct~[8], open weights at the same 4-bit quantization on a MacBook Pro (M4 Pro, 24~GB). In Weeks 8--9 each must pass acceptance checks (at least 85\% valid short answers, at least 10 points of oracle headroom), otherwise the closest same-family checkpoint is substituted. \textbf{Decoding and randomness.} Greedy decoding, at most 32 new tokens; the randomness is in distractor sampling, so each condition uses 3 seeds (independent distractor draws), averaged per question. \textbf{Metrics.} Primary: SQuAD-normalized exact match against any gold answer. Secondary: token F1. We report paired bootstrap 95\% CIs over questions (10,000 resamples). H1 is the single pre-specified primary test; all other comparisons are exploratory with Holm correction, and thresholds are fixed now and will not be tuned on the pilot. \textbf{Power.} Statistical power calculations ensure the experiment can reliably detect a true performance drop despite random noise. A Monte-Carlo simulation (assuming binary correct/incorrect outcomes and an 80\% baseline oracle accuracy) shows that testing $N=500$ questions across 3 independent seeds provides approximately 91\% power to detect Hypothesis 1's target 5-point accuracy drop, minimizing Type II Errors. As a contingency plan, if the pilot data reveals higher variance, the primary comparison will be extended to 800 questions to maintain atleast 80\% power. \textbf{Contamination.} Because SQuAD 2.0 is widely used, these questions are likely embedded in the Qwen3 and Llama pretraining corpora. This risks data contamination, where a model answers correctly using memorized weights (parametric knowledge) rather than the provided RAG context. To control for this, a closed-book baseline serves as a diagnostic filter, allowing us to quantify prior knowledge and stratify results by closed-book correctness. \textbf{Compute.} About 13{,}000 generations per model (about 39{,}000 total) at an estimated 1--3~s each: roughly 11--35 machine-hours on the laptop, with no paid API needed. \textbf{Risk and fallback.} The main risk is throughput on long prompts; if the Week 8--9 benchmark confirms it, we cut to $N=300$ questions, and if necessary, drop Llama entirely to ensure completion of the primary Qwen3 analysis, using Colab GPUs as overflow only if a pilot-set parity check confirms matching answers.
+
+\section{Timeline and Roles}
+\begin{tabularx}{\linewidth}{@{}l X l@{}}
+\toprule
+\textbf{Week} & \textbf{Milestone} & \textbf{Owner(s)} \\
+\midrule
+Week 8--9 & Sampling frame, data pipeline, dense index, distractor builder and filters; harness and Mac inference layer; closed-book and oracle baselines; pilot and model acceptance checks; blind ambiguity audit; inputs frozen (hashed) in Week 9 & Both \\
+Week 10--11 & Main experiments: primary comparison first, then the full dose-response grid across Qwen3 and Llama models; Method \& Setup in Report drafted & Both \\
+Week 12 & Scale and family comparisons, closed-book stratification, analysis and writing & Both \\
+Week 13 & Final report, fresh-clone reproducibility check, presentation & Both \\
+\bottomrule
+\end{tabularx}
+
+\vspace{0.4em}
+HASSAN Muhammad owns design, measurement and compute: the sampling frame and splits, the audit rubric, the prompt and answer-extraction rules, the metric and statistical specifications (including closed-book stratification), the analysis sections of the report, and all reported runs, executed on the MacBook. Chan Kwing Hei owns the data apparatus and analysis software: the dense index, distractor construction and filters, the backend-agnostic harness (developed on CPU or Colab), the implementation of metrics, statistics and figures from Muhammad's specifications, and the Method and reproducibility sections in the Report. Each component is reviewed by the other member before use; both build the pilot set and double-annotate the ambiguity audit (completed in Week 9, blind to model outputs)
+
+\section{Responsible Use and Tool Disclosure}
+Qwen3 is released under Apache 2.0, Llama-3.1-8B-Instruct under the Llama 3.1 Community License and Acceptable Use Policy, and SQuAD 2.0 under CC BY-SA 4.0; we will cite all three and respect their terms. The data are public Wikipedia text with no personal data, and the experiment measures a failure mode rather than building a harmful application. We used an AI assistant (Claude, Anthropic) to brainstorm the experimental design, check related work, run power simulations, and edit the LaTeX for this proposal; the team reviewed every design decision, and all experiments and analysis will be our own work.
+
+\clearpage
+\section*{References}
+\begingroup\small
+\begin{enumerate}[label={[\arabic*]}, leftmargin=2em, itemsep=0.1em, topsep=0.2em]
+\item P.~Lewis et al. Retrieval-augmented generation for knowledge-intensive NLP tasks. \emph{NeurIPS}, 2020.
+\item F.~Shi et al. Large language models can be easily distracted by irrelevant context. \emph{ICML}, 2023.
+\item O.~Yoran, T.~Wolfson, O.~Ram, J.~Berant. Making retrieval-augmented language models robust to irrelevant context. \emph{ICLR}, 2024.
+\item N.~F.~Liu et al. Lost in the middle: How language models use long contexts. \emph{TACL}, 12, 2024.
+\item F.~Cuconasu et al. The power of noise: Redefining retrieval for RAG systems. \emph{SIGIR}, 2024.
+\item P.~Rajpurkar, R.~Jia, P.~Liang. Know what you don't know: Unanswerable questions for SQuAD. \emph{ACL}, 2018.
+\item A.~Yang et al. Qwen3 technical report. \emph{arXiv:2505.09388}, 2025.
+\item A.~Dubey et al. The Llama 3 herd of models. \emph{arXiv:2407.21783}, 2024.
+\end{enumerate}
+\endgroup
+
+\end{document}
