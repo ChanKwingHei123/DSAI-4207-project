@@ -1,0 +1,11 @@
+hypothesis: H1
+primary_model: Qwen3-8B
+models: [Qwen3-4B, Qwen3-8B, Llama-3.1-8B-Instruct]
+thresholds: {hard_drop_min_pts: 5, gap_min_pts: 3, ci_level: 0.95, ci_must_exclude_zero: true}
+design: {n_levels: [0, 1, 2, 4, 8], distractor_types: [hard_negative, random_length_matched], length_match_tolerance: 0.20, seeds: 3, n_questions: 500, pilot_questions: 50, reserve_questions: 40, hard_negative_pool_k: 20, nested_prefixes: true}
+decoding: {greedy: true, max_new_tokens: 32}
+metrics: {primary: exact_match_squad_normalized, secondary: token_f1}
+statistics: {bootstrap_resamples: 10000, unit: question, average_seeds_per_question: true, secondary_correction: holm}
+power_rule: {extend_primary_comparison_to: 800, if_power_below: 0.80}
+length_match: {tokenizer: Qwen3, secondary_check_tokenizer: Llama-3.1, tolerance: 0.20}
+prompt: {template_file: configs/prompt_v1.yaml, chat_template: true, qwen3_enable_thinking: false, system_prompt: null}

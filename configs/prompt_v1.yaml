@@ -1,0 +1,2 @@
+closed_book: "Question: {q}\nAnswer with the shortest possible answer, no explanation."
+rag: "Context:\n[Document 1] {p1}\n[Document 2] {p2}\n...\n\nQuestion: {q}\nAnswer with the shortest text span that answers the question, no explanation."
