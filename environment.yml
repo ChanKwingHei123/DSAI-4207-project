@@ -1,0 +1,19 @@
+name: rag
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12.*
+  - numpy=2.5.4
+  - pandas=3.1.1
+  - scipy=1.18.1
+  - scikit-learn=1.9.1
+  - pyyaml=6.0.3
+  - tqdm=4.70.1
+  - pytest=9.2.0
+  - matplotlib=3.10.9
+  - faiss-cpu=1.14.3
+  - pip
+  - pip:
+      - torch==2.15.0
+      - transformers==5.22.1
+      - sentence-transformers==6.2.0
