@@ -21,7 +21,7 @@ Pre-registered H1 (primary model Qwen3-8B): adding 8 hard negatives to gold-only
 5. Write tests first or alongside. Run them. Show real output before claiming done.
 6. If the spec is ambiguous or conflicts with what you find, STOP and ask. Do not guess.
 7. Ask before any command expected to take longer than 10 minutes; print the estimate first.
-8. Commit small and often: "<module>: <what>". Append "(tests pass)" ONLY if tests were actually run and passed for that commit.
+8. Commit small and often: "<module>: <what>". Do not put test claims in commit messages; test results belong in the REVIEW PACKET.
 9. Do not modify files outside the task's listed scope.
 10. Run every project command inside the conda environment `rag`. Never use the system or Homebrew Python. Never pip install outside that environment.
 
