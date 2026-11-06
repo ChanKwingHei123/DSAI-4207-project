@@ -4,11 +4,6 @@
 from __future__ import annotations
 
 import os
-
-# Avoid OpenMP duplicate runtime abort when mixing conda-forge (faiss-cpu/scipy/sklearn)
-# and PyPI wheels (torch) on macOS arm64.
-os.environ.setdefault("KMP_DUPLICATE_LIB_OK", "TRUE")
-
 import importlib.metadata
 from pathlib import Path
 import platform
