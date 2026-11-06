@@ -1,0 +1,660 @@
+[
+  {
+    "question_id": "56de3f784396321400ee26fa",
+    "article_index": 0,
+    "article_title": "Normans",
+    "paragraph_id": [
+      0,
+      26
+    ],
+    "paragraph_index": 26,
+    "question_text": "What ruined Richard's plans to reach Acre?",
+    "gold_answers": [
+      "a storm",
+      "a storm",
+      "a storm"
+    ]
+  },
+  {
+    "question_id": "56e181d9e3433e1400422fa3",
+    "article_index": 1,
+    "article_title": "Computational_complexity_theory",
+    "paragraph_id": [
+      1,
+      5
+    ],
+    "paragraph_index": 5,
+    "question_text": "In the encoding of mathematical objects, what is the way in which integers are commonly expressed?",
+    "gold_answers": [
+      "binary notation",
+      "binary notation",
+      "binary notation"
+    ]
+  },
+  {
+    "question_id": "5705eb3375f01819005e7767",
+    "article_index": 2,
+    "article_title": "Southern_California",
+    "paragraph_id": [
+      2,
+      6
+    ],
+    "paragraph_index": 6,
+    "question_text": "Other than the motion picture and television industry, what other major industry is centered in Los Angeles?",
+    "gold_answers": [
+      "music",
+      "major record companies"
+    ]
+  },
+  {
+    "question_id": "57094ca7efce8f15003a7dd7",
+    "article_index": 3,
+    "article_title": "Sky_(United_Kingdom)",
+    "paragraph_id": [
+      3,
+      3
+    ],
+    "paragraph_index": 3,
+    "question_text": "When did Sky launch a TV advertising campaign target towards women?",
+    "gold_answers": [
+      "September 2007",
+      "September 2007",
+      "March 2008"
+    ]
+  },
+  {
+    "question_id": "570d2f5bfed7b91900d45cd2",
+    "article_index": 4,
+    "article_title": "Victoria_(Australia)",
+    "paragraph_id": [
+      4,
+      8
+    ],
+    "paragraph_index": 8,
+    "question_text": "What are the exceptions in the constitution  that require special considerations to amend?",
+    "gold_answers": [
+      "\"entrenched\" provisions",
+      "certain \"entrenched\" provisions",
+      "\"entrenched\" provisions"
+    ]
+  },
+  {
+    "question_id": "571112ada58dae1900cd6bce",
+    "article_index": 5,
+    "article_title": "Huguenot",
+    "paragraph_id": [
+      5,
+      34
+    ],
+    "paragraph_index": 34,
+    "question_text": "Who is one prominent advocate of this theory?",
+    "gold_answers": [
+      "Janet Gray",
+      "Janet Gray",
+      "Janet Gray"
+    ]
+  },
+  {
+    "question_id": "571163172419e314009555ea",
+    "article_index": 6,
+    "article_title": "Steam_engine",
+    "paragraph_id": [
+      6,
+      40
+    ],
+    "paragraph_index": 40,
+    "question_text": "Who confirmed Watt's discovery of latent heat?",
+    "gold_answers": [
+      "Joseph Black",
+      "Joseph Black",
+      "Joseph Black"
+    ]
+  },
+  {
+    "question_id": "571cb010dd7acb1400e4c12b",
+    "article_index": 7,
+    "article_title": "Oxygen",
+    "paragraph_id": [
+      7,
+      21
+    ],
+    "paragraph_index": 21,
+    "question_text": "By what process is singlet oxygen made in the tropophere?",
+    "gold_answers": [
+      "photolysis of ozone",
+      "photolysis of ozone",
+      "photolysis of ozone by light of short wavelength",
+      "photolysis of ozone by light of short wavelength",
+      "photolysis"
+    ]
+  },
+  {
+    "question_id": "571ce3745efbb31900334e24",
+    "article_index": 7,
+    "article_title": "Oxygen",
+    "paragraph_id": [
+      7,
+      40
+    ],
+    "paragraph_index": 40,
+    "question_text": "What physical condition can acute oxygen toxicity cause?",
+    "gold_answers": [
+      "seizures",
+      "seizures",
+      "seizures",
+      "seizures",
+      "seizures"
+    ]
+  },
+  {
+    "question_id": "572650325951b619008f6fa9",
+    "article_index": 8,
+    "article_title": "1973_oil_crisis",
+    "paragraph_id": [
+      8,
+      14
+    ],
+    "paragraph_index": 14,
+    "question_text": "What was the catalyst that created greater interest in renewable resources?",
+    "gold_answers": [
+      "energy crisis",
+      "The energy crisis",
+      "energy crisis",
+      "energy crisis",
+      "The energy crisis"
+    ]
+  },
+  {
+    "question_id": "572656e4dd62a815002e81fe",
+    "article_index": 9,
+    "article_title": "European_Union_law",
+    "paragraph_id": [
+      9,
+      9
+    ],
+    "paragraph_index": 9,
+    "question_text": "Within the EU, which court believes they have the final word deciding on EU's competence?",
+    "gold_answers": [
+      "Court of Justice",
+      "the Court of Justice",
+      "the Court of Justice",
+      "the Court of Justice"
+    ]
+  },
+  {
+    "question_id": "5726b929f1498d1400e8e8e8",
+    "article_index": 9,
+    "article_title": "European_Union_law",
+    "paragraph_id": [
+      9,
+      31
+    ],
+    "paragraph_index": 31,
+    "question_text": "What is the minimum percent of alcohol content a German law requires all spirits and liqueurs to have?",
+    "gold_answers": [
+      "25",
+      "25 per cent",
+      "25 per cent"
+    ]
+  },
+  {
+    "question_id": "5726722bdd62a815002e852a",
+    "article_index": 10,
+    "article_title": "Amazon_rainforest",
+    "paragraph_id": [
+      10,
+      9
+    ],
+    "paragraph_index": 9,
+    "question_text": "How many tons of living plants are in the rainforest?",
+    "gold_answers": [
+      "90,790",
+      "about 90,790",
+      "about 90,790",
+      "90,790"
+    ]
+  },
+  {
+    "question_id": "5725c0f289a1e219009abdf3",
+    "article_index": 11,
+    "article_title": "Ctenophora",
+    "paragraph_id": [
+      11,
+      0
+    ],
+    "paragraph_index": 0,
+    "question_text": "What does the ctenophora use to swim?",
+    "gold_answers": [
+      "‘combs’ – groups of cilia",
+      "cilia",
+      "cilia"
+    ]
+  },
+  {
+    "question_id": "5725d183271a42140099d23f",
+    "article_index": 12,
+    "article_title": "Fresno,_California",
+    "paragraph_id": [
+      12,
+      2
+    ],
+    "paragraph_index": 2,
+    "question_text": "In 1942, what was North Fresno previously called?",
+    "gold_answers": [
+      "Pinedale",
+      "Pinedale",
+      "Pinedale"
+    ]
+  },
+  {
+    "question_id": "57263dcd89a1e219009ac5a4",
+    "article_index": 13,
+    "article_title": "Packet_switching",
+    "paragraph_id": [
+      13,
+      10
+    ],
+    "paragraph_index": 10,
+    "question_text": "How was this possible ",
+    "gold_answers": [
+      "using unreliable datagrams and associated end-to-end protocol mechanisms",
+      "using unreliable datagrams and associated end-to-end protocol mechanisms",
+      "unreliable datagrams and associated end-to-end protocol mechanisms"
+    ]
+  },
+  {
+    "question_id": "57264e2f708984140094c1e3",
+    "article_index": 14,
+    "article_title": "Black_Death",
+    "paragraph_id": [
+      14,
+      10
+    ],
+    "paragraph_index": 10,
+    "question_text": "How did scientists assess the DNA/RNA of yersinia pestis? ",
+    "gold_answers": [
+      "with Polymerase Chain Reaction (PCR)",
+      "Polymerase Chain Reaction (PCR) techniques",
+      "Polymerase Chain Reaction (PCR) techniques"
+    ]
+  },
+  {
+    "question_id": "572665ff708984140094c4c6",
+    "article_index": 15,
+    "article_title": "Geology",
+    "paragraph_id": [
+      15,
+      5
+    ],
+    "paragraph_index": 5,
+    "question_text": "Rocks on top of a fault that are cut are always older or younger than the fault itself?",
+    "gold_answers": [
+      "older than the fault",
+      "older",
+      "younger"
+    ]
+  },
+  {
+    "question_id": "5726f2375951b619008f8312",
+    "article_index": 16,
+    "article_title": "Pharmacy",
+    "paragraph_id": [
+      16,
+      18
+    ],
+    "paragraph_index": 18,
+    "question_text": "What areas are pharmacy informatics prepared to work in?",
+    "gold_answers": [
+      "medication management system development, deployment and optimization",
+      "medication management system development, deployment and optimization",
+      "medication management system development, deployment and optimization"
+    ]
+  },
+  {
+    "question_id": "572812e74b864d19001643d2",
+    "article_index": 17,
+    "article_title": "Civil_disobedience",
+    "paragraph_id": [
+      17,
+      6
+    ],
+    "paragraph_index": 6,
+    "question_text": "Thoreau mentions what type of person could corrupt a government system?",
+    "gold_answers": [
+      "elite politicians",
+      "elite politicians",
+      "individuals",
+      "elite politicians",
+      "individuals"
+    ]
+  },
+  {
+    "question_id": "572753335951b619008f8854",
+    "article_index": 18,
+    "article_title": "Construction",
+    "paragraph_id": [
+      18,
+      16
+    ],
+    "paragraph_index": 16,
+    "question_text": "Whose role is to design the works, prepare the specifications and produce construction drawings, administer the contract, tender the works, and manage the works from inception to completion",
+    "gold_answers": [
+      "the project coordinator",
+      "project coordinator",
+      "the architect or engineer"
+    ]
+  },
+  {
+    "question_id": "572750df5951b619008f8830",
+    "article_index": 19,
+    "article_title": "Private_school",
+    "paragraph_id": [
+      19,
+      17
+    ],
+    "paragraph_index": 17,
+    "question_text": "What stipend do students enrolled in priority courses receive?",
+    "gold_answers": [
+      "Tuition Fee Supplement",
+      "Tuition Fee Supplement",
+      "Tuition Fee Supplement"
+    ]
+  },
+  {
+    "question_id": "5727e21e4b864d1900163f34",
+    "article_index": 20,
+    "article_title": "Harvard_University",
+    "paragraph_id": [
+      20,
+      29
+    ],
+    "paragraph_index": 29,
+    "question_text": "What Fields Medal winning Mathematician is a faculty member at Harvard?",
+    "gold_answers": [
+      "Shing-Tung Yau",
+      "Shing-Tung Yau",
+      "Shing-Tung Yau"
+    ]
+  },
+  {
+    "question_id": "57281bb84b864d190016449a",
+    "article_index": 21,
+    "article_title": "Jacksonville,_Florida",
+    "paragraph_id": [
+      21,
+      11
+    ],
+    "paragraph_index": 11,
+    "question_text": "What was the cause for the issues with city funding?",
+    "gold_answers": [
+      "Much of the city's tax base dissipated",
+      "tax base dissipated"
+    ]
+  },
+  {
+    "question_id": "5729e02f1d0469140077963c",
+    "article_index": 22,
+    "article_title": "Economic_inequality",
+    "paragraph_id": [
+      22,
+      7
+    ],
+    "paragraph_index": 7,
+    "question_text": "What index is an indicator of the effects of taxes applied to social spending?",
+    "gold_answers": [
+      "the Gini index",
+      "Gini",
+      "Gini"
+    ]
+  },
+  {
+    "question_id": "5727fc37ff5b5019007d9a19",
+    "article_index": 22,
+    "article_title": "Economic_inequality",
+    "paragraph_id": [
+      22,
+      13
+    ],
+    "paragraph_index": 13,
+    "question_text": "What effect does trade with richer countries have on the workers in poorer countries?",
+    "gold_answers": [
+      "increased wages",
+      "increased wages",
+      "increased wages"
+    ]
+  },
+  {
+    "question_id": "5728742cff5b5019007da248",
+    "article_index": 23,
+    "article_title": "University_of_Chicago",
+    "paragraph_id": [
+      23,
+      35
+    ],
+    "paragraph_index": 35,
+    "question_text": "What meteorologist was also apart of the university's faculty?",
+    "gold_answers": [
+      "Ted Fujita",
+      "Ted Fujita",
+      "Ted Fujita"
+    ]
+  },
+  {
+    "question_id": "5728705c2ca10214002da35a",
+    "article_index": 24,
+    "article_title": "Yuan_dynasty",
+    "paragraph_id": [
+      24,
+      17
+    ],
+    "paragraph_index": 17,
+    "question_text": "Where did Yesun Temur die?",
+    "gold_answers": [
+      "Shangdu",
+      "Shangdu",
+      "Shangdu"
+    ]
+  },
+  {
+    "question_id": "572a10cd6aef051400155223",
+    "article_index": 25,
+    "article_title": "Immune_system",
+    "paragraph_id": [
+      25,
+      45
+    ],
+    "paragraph_index": 45,
+    "question_text": "What kind of amino acids are overrepresented in epitope regions?",
+    "gold_answers": [
+      "hydrophilic amino acids",
+      "hydrophilic",
+      "hydrophilic amino acids"
+    ]
+  },
+  {
+    "question_id": "57293f353f37b3190047819f",
+    "article_index": 26,
+    "article_title": "Intergovernmental_Panel_on_Climate_Change",
+    "paragraph_id": [
+      26,
+      8
+    ],
+    "paragraph_index": 8,
+    "question_text": "What did Houghton say is necessary for any changes to the SPM?",
+    "gold_answers": [
+      "scientific evidence",
+      "must be supported by scientific evidence",
+      "must be supported by scientific evidence"
+    ]
+  },
+  {
+    "question_id": "572985011d04691400779502",
+    "article_index": 27,
+    "article_title": "Prime_number",
+    "paragraph_id": [
+      27,
+      14
+    ],
+    "paragraph_index": 14,
+    "question_text": "Who first proved Bertrand's postulate?",
+    "gold_answers": [
+      "Chebyshev",
+      "Chebyshev",
+      "Chebyshev",
+      "Chebyshev",
+      "Chebyshev"
+    ]
+  },
+  {
+    "question_id": "572f5533a23a5019007fc55e",
+    "article_index": 28,
+    "article_title": "Rhine",
+    "paragraph_id": [
+      28,
+      0
+    ],
+    "paragraph_index": 0,
+    "question_text": "What river is larger than the Rhine?",
+    "gold_answers": [
+      "Danube",
+      "the Danube",
+      "Danube",
+      "Danube"
+    ]
+  },
+  {
+    "question_id": "572fe1d404bcaa1900d76e3b",
+    "article_index": 28,
+    "article_title": "Rhine",
+    "paragraph_id": [
+      28,
+      0
+    ],
+    "paragraph_index": 0,
+    "question_text": "How long is the Rhine? ",
+    "gold_answers": [
+      "1,230 km",
+      "1,230 km (760 mi)",
+      "1,230 km",
+      "1,230 km"
+    ]
+  },
+  {
+    "question_id": "572fcd86947a6a140053ccde",
+    "article_index": 29,
+    "article_title": "Scottish_Parliament",
+    "paragraph_id": [
+      29,
+      25
+    ],
+    "paragraph_index": 25,
+    "question_text": "How do bills pass through Parliament?",
+    "gold_answers": [
+      "in a number of stages",
+      "a number of stages",
+      "in a number of stages"
+    ]
+  },
+  {
+    "question_id": "57302faa04bcaa1900d77311",
+    "article_index": 30,
+    "article_title": "Islamism",
+    "paragraph_id": [
+      30,
+      37
+    ],
+    "paragraph_index": 37,
+    "question_text": "How many Muslims are in Greater London?",
+    "gold_answers": [
+      "over 900,000",
+      "900,000",
+      "over 900,000"
+    ]
+  },
+  {
+    "question_id": "57308cf88ab72b1400f9c57a",
+    "article_index": 31,
+    "article_title": "Imperialism",
+    "paragraph_id": [
+      31,
+      8
+    ],
+    "paragraph_index": 8,
+    "question_text": "By justification certain racial and geographical theories, Europe thought of itself as what?",
+    "gold_answers": [
+      "superior",
+      "superior",
+      "the superior and the norm",
+      "superior",
+      "superior"
+    ]
+  },
+  {
+    "question_id": "57332a734776f41900660726",
+    "article_index": 32,
+    "article_title": "Warsaw",
+    "paragraph_id": [
+      32,
+      7
+    ],
+    "paragraph_index": 7,
+    "question_text": "How long was Warsaw the capital of the Polish-Lithuanian Commonwealth?",
+    "gold_answers": [
+      "until 1796",
+      "until 1796"
+    ]
+  },
+  {
+    "question_id": "57336755d058e614000b5a3e",
+    "article_index": 32,
+    "article_title": "Warsaw",
+    "paragraph_id": [
+      32,
+      21
+    ],
+    "paragraph_index": 21,
+    "question_text": "Which end of the Saxon Garden is the Tom of the Unknown Soldier located at?",
+    "gold_answers": [
+      "east end",
+      "east",
+      "east"
+    ]
+  },
+  {
+    "question_id": "57340111d058e614000b677e",
+    "article_index": 33,
+    "article_title": "French_and_Indian_War",
+    "paragraph_id": [
+      33,
+      36
+    ],
+    "paragraph_index": 36,
+    "question_text": "What other reason caused poor supply of New France from a difficult winter?",
+    "gold_answers": [
+      "poor harvest",
+      "allegedly corrupt machinations of François Bigot",
+      "poor harvest in 1757",
+      "poor harvest in 1757",
+      "a poor harvest"
+    ]
+  },
+  {
+    "question_id": "573735e8c3c5551400e51e75",
+    "article_index": 34,
+    "article_title": "Force",
+    "paragraph_id": [
+      34,
+      0
+    ],
+    "paragraph_index": 0,
+    "question_text": "Who develped the theory of relativity?",
+    "gold_answers": [
+      "Einstein",
+      "Einstein",
+      "Einstein",
+      "Einstein",
+      "Einstein",
+      "Einstein"
+    ]
+  }
+]

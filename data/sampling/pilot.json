@@ -1,0 +1,821 @@
+[
+  {
+    "question_id": "56de49a8cffd8e1900b4b7a9",
+    "article_index": 0,
+    "article_title": "Normans",
+    "paragraph_id": [
+      0,
+      29
+    ],
+    "paragraph_index": 29,
+    "question_text": "Who sold the rights?",
+    "gold_answers": [
+      "Maciot de Bethencourt",
+      "Maciot de Bethencourt",
+      "Maciot de Bethencourt"
+    ]
+  },
+  {
+    "question_id": "56e1c720e3433e140042316e",
+    "article_index": 1,
+    "article_title": "Computational_complexity_theory",
+    "paragraph_id": [
+      1,
+      27
+    ],
+    "paragraph_index": 27,
+    "question_text": "What kind of statement is made in the effort of establishing the time and space requirements needed to enhance the ultimate number of problems solved?",
+    "gold_answers": [
+      "quantitative statements",
+      "quantitative",
+      "quantitative"
+    ]
+  },
+  {
+    "question_id": "56e1ec83cd28a01900c67c0b",
+    "article_index": 1,
+    "article_title": "Computational_complexity_theory",
+    "paragraph_id": [
+      1,
+      37
+    ],
+    "paragraph_index": 37,
+    "question_text": "The integer factorization problem essentially seeks to determine if the value of of an input is less than what variable? ",
+    "gold_answers": [
+      "k",
+      "k",
+      "k"
+    ]
+  },
+  {
+    "question_id": "5705f09e75f01819005e77a5",
+    "article_index": 2,
+    "article_title": "Southern_California",
+    "paragraph_id": [
+      2,
+      11
+    ],
+    "paragraph_index": 11,
+    "question_text": "What was the name given to the regions in which the pro - slavery southerners lived?",
+    "gold_answers": [
+      "Cow Counties",
+      "Cow Counties",
+      "Cow Counties"
+    ]
+  },
+  {
+    "question_id": "570961aa200fba1400367f17",
+    "article_index": 3,
+    "article_title": "Sky_(United_Kingdom)",
+    "paragraph_id": [
+      3,
+      7
+    ],
+    "paragraph_index": 7,
+    "question_text": "When did BSkyB end their analogue service?",
+    "gold_answers": [
+      "27 September 2001",
+      "27 September 2001",
+      "September 2001"
+    ]
+  },
+  {
+    "question_id": "570d391fb3d812140066d576",
+    "article_index": 4,
+    "article_title": "Victoria_(Australia)",
+    "paragraph_id": [
+      4,
+      13
+    ],
+    "paragraph_index": 13,
+    "question_text": "Of what mountain system are the Victorian Alps a part?",
+    "gold_answers": [
+      "Great Dividing Range",
+      "the Great Dividing Range",
+      "Great Dividing Range"
+    ]
+  },
+  {
+    "question_id": "57109180a58dae1900cd6a40",
+    "article_index": 5,
+    "article_title": "Huguenot",
+    "paragraph_id": [
+      5,
+      16
+    ],
+    "paragraph_index": 16,
+    "question_text": "What Irish cities had Huguenot mayors in the 1600s and 1700s?",
+    "gold_answers": [
+      "Dublin, Cork, Youghal and Waterford",
+      "Dublin, Cork, Youghal and Waterford",
+      "Dublin, Cork, Youghal and Waterford"
+    ]
+  },
+  {
+    "question_id": "571093aba58dae1900cd6a5e",
+    "article_index": 5,
+    "article_title": "Huguenot",
+    "paragraph_id": [
+      5,
+      18
+    ],
+    "paragraph_index": 18,
+    "question_text": "What did the Edict do for Huguenots in France?",
+    "gold_answers": [
+      "granted the Protestants equality with Catholics",
+      "granted the Protestants equality",
+      "granted the Protestants equality with Catholics under the throne and a degree of religious and political freedom within their domains"
+    ]
+  },
+  {
+    "question_id": "57115f652419e314009555ba",
+    "article_index": 6,
+    "article_title": "Steam_engine",
+    "paragraph_id": [
+      6,
+      33
+    ],
+    "paragraph_index": 33,
+    "question_text": "What was the nationality of Jerónimo de Ayanz y Beaumont?",
+    "gold_answers": [
+      "Spanish",
+      "Spanish",
+      "Spanish",
+      "Spanish"
+    ]
+  },
+  {
+    "question_id": "571161092419e314009555d7",
+    "article_index": 6,
+    "article_title": "Steam_engine",
+    "paragraph_id": [
+      6,
+      36
+    ],
+    "paragraph_index": 36,
+    "question_text": "What is an example of a rotary engine without pistons?",
+    "gold_answers": [
+      "Wankel",
+      "Wankel",
+      "the Wankel engine"
+    ]
+  },
+  {
+    "question_id": "571c7abfdd7acb1400e4c0be",
+    "article_index": 7,
+    "article_title": "Oxygen",
+    "paragraph_id": [
+      7,
+      4
+    ],
+    "paragraph_index": 4,
+    "question_text": "Of what did da Vinci think a part  was consumed during combustion?",
+    "gold_answers": [
+      "air",
+      "air",
+      "air",
+      "air"
+    ]
+  },
+  {
+    "question_id": "571ce9bddd7acb1400e4c1a2",
+    "article_index": 7,
+    "article_title": "Oxygen",
+    "paragraph_id": [
+      7,
+      6
+    ],
+    "paragraph_index": 6,
+    "question_text": "What does the transport and storage demand for safety in dealing with oxygen?",
+    "gold_answers": [
+      "special training",
+      "special training",
+      "special training to ensure that ignition sources are minimized",
+      "special training",
+      "special training"
+    ]
+  },
+  {
+    "question_id": "5725bcb6271a42140099d0ef",
+    "article_index": 8,
+    "article_title": "1973_oil_crisis",
+    "paragraph_id": [
+      8,
+      5
+    ],
+    "paragraph_index": 5,
+    "question_text": "Why did OPEC block oil deliveries to the United States?",
+    "gold_answers": [
+      "American aid to Israel",
+      "Nixon requested Congress to appropriate $2.2 billion in emergency aid to Israel",
+      "OAPEC proclaimed the embargo that curbed exports to various countries and blocked all oil deliveries to the US as a \"principal hostile country",
+      "OAPEC proclaimed the embargo that curbed exports to various countries",
+      "American aid to Israel"
+    ]
+  },
+  {
+    "question_id": "57269cc3dd62a815002e8b15",
+    "article_index": 9,
+    "article_title": "European_Union_law",
+    "paragraph_id": [
+      9,
+      15
+    ],
+    "paragraph_index": 15,
+    "question_text": "When did the three Advocate Generals argue that Directives should create rights and duties for all citizens?",
+    "gold_answers": [
+      "early 1990s",
+      "the early 1990s",
+      "early 1990s"
+    ]
+  },
+  {
+    "question_id": "5726a09f708984140094cc39",
+    "article_index": 9,
+    "article_title": "European_Union_law",
+    "paragraph_id": [
+      9,
+      19
+    ],
+    "paragraph_index": 19,
+    "question_text": "How long has Proportionality been recognized as one of the general principles of EU law?",
+    "gold_answers": [
+      "since the 1950s",
+      "since the 1950s",
+      "since the 1950s"
+    ]
+  },
+  {
+    "question_id": "5725cbb289a1e219009abed3",
+    "article_index": 10,
+    "article_title": "Amazon_rainforest",
+    "paragraph_id": [
+      10,
+      6
+    ],
+    "paragraph_index": 6,
+    "question_text": "During what time did civilization in the Amazon was flourishing when Orellana made his observations?",
+    "gold_answers": [
+      "1540s",
+      "1540s",
+      "1540s"
+    ]
+  },
+  {
+    "question_id": "5725c69738643c19005accbc",
+    "article_index": 11,
+    "article_title": "Ctenophora",
+    "paragraph_id": [
+      11,
+      3
+    ],
+    "paragraph_index": 3,
+    "question_text": "Where do ctenophores be found in large numbers?",
+    "gold_answers": [
+      "In bays",
+      "bays",
+      "bays"
+    ]
+  },
+  {
+    "question_id": "5725daa8ec44d21400f3d6b4",
+    "article_index": 12,
+    "article_title": "Fresno,_California",
+    "paragraph_id": [
+      12,
+      7
+    ],
+    "paragraph_index": 7,
+    "question_text": "What was the pedestrian mall renamed?",
+    "gold_answers": [
+      "Fulton Mall",
+      "Fulton Mall",
+      "Fulton Mall"
+    ]
+  },
+  {
+    "question_id": "5726385e271a42140099d797",
+    "article_index": 13,
+    "article_title": "Packet_switching",
+    "paragraph_id": [
+      13,
+      5
+    ],
+    "paragraph_index": 5,
+    "question_text": "What does each packet includ in connectionless mode ",
+    "gold_answers": [
+      "each packet includes complete addressing information",
+      "complete addressing information",
+      "complete addressing information"
+    ]
+  },
+  {
+    "question_id": "57265285708984140094c25c",
+    "article_index": 14,
+    "article_title": "Black_Death",
+    "paragraph_id": [
+      14,
+      15
+    ],
+    "paragraph_index": 15,
+    "question_text": "How significant was the transfer of disease through fleas?",
+    "gold_answers": [
+      "of marginal significance",
+      "marginal",
+      "marginal"
+    ]
+  },
+  {
+    "question_id": "572673f5708984140094c69e",
+    "article_index": 15,
+    "article_title": "Geology",
+    "paragraph_id": [
+      15,
+      12
+    ],
+    "paragraph_index": 12,
+    "question_text": "What activity maintains topographic gradients?",
+    "gold_answers": [
+      "Continual motion along the fault",
+      "Continual motion",
+      "Continual motion along the fault"
+    ]
+  },
+  {
+    "question_id": "5726f96ddd62a815002e969c",
+    "article_index": 16,
+    "article_title": "Pharmacy",
+    "paragraph_id": [
+      16,
+      24
+    ],
+    "paragraph_index": 24,
+    "question_text": "What degree is now mandatory in the U.S. in order to be a licensed pharmacist?",
+    "gold_answers": [
+      "Doctor of Pharmacy (Pharm. D.)",
+      "Doctor of Pharmacy",
+      "the Doctor of Pharmacy (Pharm. D.) degree"
+    ]
+  },
+  {
+    "question_id": "5728d4c03acd2414000dffa2",
+    "article_index": 17,
+    "article_title": "Civil_disobedience",
+    "paragraph_id": [
+      17,
+      0
+    ],
+    "paragraph_index": 0,
+    "question_text": "What does civil disobedience protest against?",
+    "gold_answers": [
+      "unfair laws",
+      "unfair laws",
+      "unfair laws.",
+      "unfair laws",
+      "what they deem to be unfair"
+    ]
+  },
+  {
+    "question_id": "5728e3c33acd2414000e0131",
+    "article_index": 17,
+    "article_title": "Civil_disobedience",
+    "paragraph_id": [
+      17,
+      11
+    ],
+    "paragraph_index": 11,
+    "question_text": "When is the oldest recorded incident of civil disobedience?",
+    "gold_answers": [
+      "during the Roman Empire",
+      "during the Roman Empire",
+      "during the Roman Empire",
+      "during the Roman Empire",
+      "during the Roman Empire"
+    ]
+  },
+  {
+    "question_id": "57275411dd62a815002e9b32",
+    "article_index": 18,
+    "article_title": "Construction",
+    "paragraph_id": [
+      18,
+      17
+    ],
+    "paragraph_index": 17,
+    "question_text": "Who selects and hires the best ideas and appropriate contractors?",
+    "gold_answers": [
+      "The owner",
+      "The owner",
+      "The owner"
+    ]
+  },
+  {
+    "question_id": "5727515f708984140094dc11",
+    "article_index": 19,
+    "article_title": "Private_school",
+    "paragraph_id": [
+      19,
+      18
+    ],
+    "paragraph_index": 18,
+    "question_text": "What South African law recognized two types of schools?",
+    "gold_answers": [
+      "South African Schools Act",
+      "South African Schools Act",
+      "South African Schools Act"
+    ]
+  },
+  {
+    "question_id": "5727d4922ca10214002d977e",
+    "article_index": 20,
+    "article_title": "Harvard_University",
+    "paragraph_id": [
+      20,
+      18
+    ],
+    "paragraph_index": 18,
+    "question_text": "What are the top 4-5% graduating students honored with?",
+    "gold_answers": [
+      "summa cum laude",
+      "summa cum laude",
+      "summa cum laude"
+    ]
+  },
+  {
+    "question_id": "572821274b864d1900164510",
+    "article_index": 21,
+    "article_title": "Jacksonville,_Florida",
+    "paragraph_id": [
+      21,
+      15
+    ],
+    "paragraph_index": 15,
+    "question_text": "What distinction does the Bank of America Tower hold?",
+    "gold_answers": [
+      "tallest building in Downtown Jacksonville",
+      "tallest precast, post-tensioned concrete structure",
+      "tallest building in Downtown Jacksonville"
+    ]
+  },
+  {
+    "question_id": "5729e2b76aef0514001550cf",
+    "article_index": 22,
+    "article_title": "Economic_inequality",
+    "paragraph_id": [
+      22,
+      10
+    ],
+    "paragraph_index": 10,
+    "question_text": "What did the increase in skilled workers lead to?",
+    "gold_answers": [
+      "a decrease in the price of skilled labor",
+      "decrease in the price of skilled labor",
+      "decrease in the price of skilled labor"
+    ]
+  },
+  {
+    "question_id": "5727f7523acd2414000df110",
+    "article_index": 22,
+    "article_title": "Economic_inequality",
+    "paragraph_id": [
+      22,
+      12
+    ],
+    "paragraph_index": 12,
+    "question_text": "What has presented problems to the US economy more than other nations?",
+    "gold_answers": [
+      "technological changes and globalization",
+      "decline of organized labor",
+      "technological changes and globalization"
+    ]
+  },
+  {
+    "question_id": "57284142ff5b5019007da00e",
+    "article_index": 23,
+    "article_title": "University_of_Chicago",
+    "paragraph_id": [
+      23,
+      3
+    ],
+    "paragraph_index": 3,
+    "question_text": "What is the name of the donor who helped establish the Hutchinson Commons?",
+    "gold_answers": [
+      "Charles L. Hutchinson",
+      "Charles L. Hutchinson",
+      "Charles L. Hutchinson",
+      "Charles L. Hutchinson"
+    ]
+  },
+  {
+    "question_id": "57287f6a3acd2414000dfa54",
+    "article_index": 24,
+    "article_title": "Yuan_dynasty",
+    "paragraph_id": [
+      24,
+      31
+    ],
+    "paragraph_index": 31,
+    "question_text": "What form of poetry was developed in the Yuan?",
+    "gold_answers": [
+      "the qu",
+      "the qu",
+      "qu"
+    ]
+  },
+  {
+    "question_id": "5728848cff5b5019007da299",
+    "article_index": 24,
+    "article_title": "Yuan_dynasty",
+    "paragraph_id": [
+      24,
+      43
+    ],
+    "paragraph_index": 43,
+    "question_text": "What did Mote think the Yuan class system really represented?",
+    "gold_answers": [
+      "degrees of privilege",
+      "degrees of privilege",
+      "degrees of privilege"
+    ]
+  },
+  {
+    "question_id": "5729fe5c3f37b31900478632",
+    "article_index": 25,
+    "article_title": "Immune_system",
+    "paragraph_id": [
+      25,
+      28
+    ],
+    "paragraph_index": 28,
+    "question_text": "Under normal conditions, T cells and antibodies produce what kind of peptides?",
+    "gold_answers": [
+      "\"self\" peptides",
+      "self",
+      "self\" peptides"
+    ]
+  },
+  {
+    "question_id": "572a0ce11d046914007796fe",
+    "article_index": 25,
+    "article_title": "Immune_system",
+    "paragraph_id": [
+      25,
+      42
+    ],
+    "paragraph_index": 42,
+    "question_text": "What food bacteria is an example of intracellular pathogenesis?",
+    "gold_answers": [
+      "Salmonella",
+      "Salmonella",
+      "Salmonella"
+    ]
+  },
+  {
+    "question_id": "57293c246aef051400154bba",
+    "article_index": 26,
+    "article_title": "Intergovernmental_Panel_on_Climate_Change",
+    "paragraph_id": [
+      26,
+      2
+    ],
+    "paragraph_index": 2,
+    "question_text": "What kind of people attend the IPCC meetings?",
+    "gold_answers": [
+      "government officials and climate change experts",
+      "government officials and climate change experts",
+      "government officials and climate change experts"
+    ]
+  },
+  {
+    "question_id": "57299c2c6aef051400155024",
+    "article_index": 27,
+    "article_title": "Prime_number",
+    "paragraph_id": [
+      27,
+      25
+    ],
+    "paragraph_index": 25,
+    "question_text": "Under what condition is an element irreducible?",
+    "gold_answers": [
+      "cannot be written as a product of two ring elements that are not units",
+      "not a unit and cannot be written as a product of two ring elements that are not units.",
+      "it is not a unit and cannot be written as a product of two ring elements that are not units",
+      "it is not a unit and cannot be written as a product of two ring elements that are not units"
+    ]
+  },
+  {
+    "question_id": "572ff56304bcaa1900d76f31",
+    "article_index": 28,
+    "article_title": "Rhine",
+    "paragraph_id": [
+      28,
+      17
+    ],
+    "paragraph_index": 17,
+    "question_text": "Where does the Nederrijn change it's name?",
+    "gold_answers": [
+      "Wijk bij Duurstede",
+      "at Wijk bij Duurstede",
+      "Wijk bij Duurstede"
+    ]
+  },
+  {
+    "question_id": "57300a25a23a5019007fcc99",
+    "article_index": 28,
+    "article_title": "Rhine",
+    "paragraph_id": [
+      28,
+      40
+    ],
+    "paragraph_index": 40,
+    "question_text": "Who established the Confederation of the Rhine?",
+    "gold_answers": [
+      "Napoleon",
+      "Napoleon",
+      "Napoleon"
+    ]
+  },
+  {
+    "question_id": "572fc41f947a6a140053cc83",
+    "article_index": 29,
+    "article_title": "Scottish_Parliament",
+    "paragraph_id": [
+      29,
+      14
+    ],
+    "paragraph_index": 14,
+    "question_text": "What members typically open debates?",
+    "gold_answers": [
+      "ministers or party leaders",
+      "ministers or party leaders",
+      "ministers or party leaders"
+    ]
+  },
+  {
+    "question_id": "572fcb6da23a5019007fc9f4",
+    "article_index": 29,
+    "article_title": "Scottish_Parliament",
+    "paragraph_id": [
+      29,
+      23
+    ],
+    "paragraph_index": 23,
+    "question_text": "How much can the SP alter income tax in Scotland?",
+    "gold_answers": [
+      "up to 3 pence in the pound",
+      "up to 3 pence in the pound",
+      "up to 3 pence in the pound"
+    ]
+  },
+  {
+    "question_id": "57300f8504bcaa1900d770d3",
+    "article_index": 30,
+    "article_title": "Islamism",
+    "paragraph_id": [
+      30,
+      20
+    ],
+    "paragraph_index": 20,
+    "question_text": "Up until 1990, Saudi Arabia played an important role in restraining what groups?",
+    "gold_answers": [
+      "Islamist",
+      "Islamist",
+      "Islamist"
+    ]
+  },
+  {
+    "question_id": "57303048947a6a140053d256",
+    "article_index": 30,
+    "article_title": "Islamism",
+    "paragraph_id": [
+      30,
+      38
+    ],
+    "paragraph_index": 38,
+    "question_text": "Who called for an agency to be created to be solely focused at undermining the Islamism ideology?",
+    "gold_answers": [
+      "Christian Whiton",
+      "George W. Bush",
+      "Christian Whiton"
+    ]
+  },
+  {
+    "question_id": "5730876a396df9190009617d",
+    "article_index": 31,
+    "article_title": "Imperialism",
+    "paragraph_id": [
+      31,
+      6
+    ],
+    "paragraph_index": 6,
+    "question_text": "Which theory justifies imperialism in part?",
+    "gold_answers": [
+      "theory of races",
+      "Social Darwinism",
+      "Social Darwinism",
+      "Social Darwinism"
+    ]
+  },
+  {
+    "question_id": "573092088ab72b1400f9c596",
+    "article_index": 31,
+    "article_title": "Imperialism",
+    "paragraph_id": [
+      31,
+      12
+    ],
+    "paragraph_index": 12,
+    "question_text": "The Asante and Lunda Empires were in which region?",
+    "gold_answers": [
+      "Sub-Saharan Africa",
+      "Sub-Saharan Africa",
+      "Sub-Saharan Africa",
+      "Sub-Saharan Africa"
+    ]
+  },
+  {
+    "question_id": "573399b54776f41900660e65",
+    "article_index": 32,
+    "article_title": "Warsaw",
+    "paragraph_id": [
+      32,
+      36
+    ],
+    "paragraph_index": 36,
+    "question_text": "What was a major success, especially in rebuilding Warsaw?",
+    "gold_answers": [
+      "Three-Year Plan",
+      "Three-Year Plan",
+      "Three-Year Plan"
+    ]
+  },
+  {
+    "question_id": "5733a2a9d058e614000b5f29",
+    "article_index": 32,
+    "article_title": "Warsaw",
+    "paragraph_id": [
+      32,
+      43
+    ],
+    "paragraph_index": 43,
+    "question_text": "How many projects does the Centre currently realize a year?",
+    "gold_answers": [
+      "about 500",
+      "500",
+      "about 500"
+    ]
+  },
+  {
+    "question_id": "5733faaf4776f41900661632",
+    "article_index": 33,
+    "article_title": "French_and_Indian_War",
+    "paragraph_id": [
+      33,
+      30
+    ],
+    "paragraph_index": 30,
+    "question_text": "Where was Shirley planning an expedition?",
+    "gold_answers": [
+      "through the wilderness of the Maine district and down the Chaudière River to attack the city of Quebec",
+      "wilderness of the Maine district and down the Chaudière River",
+      "the wilderness of the Maine district",
+      "Maine",
+      "the wilderness of the Maine district and down the Chaudière River"
+    ]
+  },
+  {
+    "question_id": "57376c50c3c5551400e51ed1",
+    "article_index": 34,
+    "article_title": "Force",
+    "paragraph_id": [
+      34,
+      13
+    ],
+    "paragraph_index": 13,
+    "question_text": "What can orthogonal forces be when there are three components with two at right angles to each other?",
+    "gold_answers": [
+      "three-dimensional",
+      "three-dimensional",
+      "three-dimensional",
+      "three-dimensional"
+    ]
+  },
+  {
+    "question_id": "573776eec3c5551400e51eec",
+    "article_index": 34,
+    "article_title": "Force",
+    "paragraph_id": [
+      34,
+      16
+    ],
+    "paragraph_index": 16,
+    "question_text": "Where will a canonball dropped from the crow's nest of a ship land according to Aristotle?",
+    "gold_answers": [
+      "behind the foot of the mast",
+      "straight down",
+      "behind the foot of the mast",
+      "behind the foot of the mast",
+      "behind the foot of the mast of a moving ship"
+    ]
+  }
+]
