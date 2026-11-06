@@ -1,0 +1,23 @@
+# macOS
+.DS_Store
+
+# Python bytecode & packaging
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+*.egg-info/
+
+# Model weights & caches
+*.safetensors
+*.gguf
+*.bin
+hf_cache/
+models/
+
+# Raw data & intermediate index artifacts (never ignore data/frozen/ or results/*.jsonl)
+data/raw/
+results/index/
+!data/frozen/
+!data/frozen/**
+!results/*.jsonl
