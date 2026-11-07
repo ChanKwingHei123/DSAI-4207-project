@@ -47,9 +47,13 @@ def test_real_repo_prereg_and_prompt_contents_and_readonly() -> None:
     """Verify exact values in configs/prereg.yaml and configs/prompt_v1.yaml and chmod 444."""
     prereg_path = REPO_ROOT / "configs" / "prereg.yaml"
     prompt_path = REPO_ROOT / "configs" / "prompt_v1.yaml"
+    prereg_sha_path = REPO_ROOT / "tests" / "prereg.sha256"
+    prompt_sha_path = REPO_ROOT / "tests" / "prompt.sha256"
 
     assert (prereg_path.stat().st_mode & 0o777) == 0o444
     assert (prompt_path.stat().st_mode & 0o777) == 0o444
+    assert (prereg_sha_path.stat().st_mode & 0o777) == 0o444
+    assert (prompt_sha_path.stat().st_mode & 0o777) == 0o444
 
     prereg = yaml.safe_load(prereg_path.read_text(encoding="utf-8"))
     assert prereg == {
@@ -93,16 +97,48 @@ def test_real_repo_prereg_and_prompt_contents_and_readonly() -> None:
             "qwen3_enable_thinking": False,
             "system_prompt": None,
         },
+        "primary_comparison": {
+            "n": 8,
+            "model": "Qwen3-8B",
+            "baseline_condition": "oracle",
+            "distractor_types": ["hard_negative", "random_length_matched"],
+        },
+        "rng": {
+            "master_seed": 4207,
+            "draw_seeds": [0, 1, 2],
+        },
     }
 
     prompt = yaml.safe_load(prompt_path.read_text(encoding="utf-8"))
     assert prompt == {
         "closed_book": "Question: {q}\nAnswer with the shortest possible answer, no explanation.",
-        "rag": (
-            "Context:\n[Document 1] {p1}\n[Document 2] {p2}\n...\n\n"
-            "Question: {q}\nAnswer with the shortest text span that answers the question, no explanation."
-        ),
+        "rag": {
+            "header": "Context:\n",
+            "passage_line": "[Document {i}] {text}\n",
+            "footer": "\nQuestion: {q}\nAnswer with the shortest text span that answers the question, no explanation.",
+        },
     }
+
+
+def test_rag_prompt_rendering_matches_fixture_bytes() -> None:
+    """Verify applying the RAG rendering rule to AAA/BBB/CCC/QQQ matches fixture byte for byte."""
+    prompt_path = REPO_ROOT / "configs" / "prompt_v1.yaml"
+    fixture_path = REPO_ROOT / "tests" / "fixtures" / "rag_prompt_3passages.txt"
+
+    prompt = yaml.safe_load(prompt_path.read_text(encoding="utf-8"))
+    rag_tpl = prompt["rag"]
+    passages = ["AAA", "BBB", "CCC"]
+    question = "QQQ"
+
+    rendered = (
+        rag_tpl["header"]
+        + "".join(
+            rag_tpl["passage_line"].format(i=i, text=text)
+            for i, text in enumerate(passages, start=1)
+        )
+        + rag_tpl["footer"].format(q=question)
+    )
+    assert rendered.encode("utf-8") == fixture_path.read_bytes()
 
 
 def test_real_repo_invariants_pass() -> None:

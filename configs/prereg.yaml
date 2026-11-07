@@ -9,3 +9,5 @@ statistics: {bootstrap_resamples: 10000, unit: question, average_seeds_per_quest
 power_rule: {extend_primary_comparison_to: 800, if_power_below: 0.80}
 length_match: {tokenizer: Qwen3, secondary_check_tokenizer: Llama-3.1, tolerance: 0.20}
 prompt: {template_file: configs/prompt_v1.yaml, chat_template: true, qwen3_enable_thinking: false, system_prompt: null}
+primary_comparison: {n: 8, model: Qwen3-8B, baseline_condition: oracle, distractor_types: [hard_negative, random_length_matched]}
+rng: {master_seed: 4207, draw_seeds: [0, 1, 2]}
