@@ -17,4 +17,4 @@ invariants:
 
 test:
 	$(CHECK_RAG_ENV)
-	pytest -v tests/test_invariants.py
+	pytest -v tests/
