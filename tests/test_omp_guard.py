@@ -88,6 +88,10 @@ print("ENCODE_OK", emb.shape)
     assert "ENCODE_OK (1, 384)" in proc.stdout
 
 
+@pytest.mark.skipif(
+    sys.platform != "darwin",
+    reason="OpenMP duplicate library conflict is specific to macOS",
+)
 def test_b_negative_control_without_omp_guard_aborts_with_omp_error_15() -> None:
     """(b) Negative control in fresh interpreter WITHOUT omp_guard: import torch then sentence_transformers."""
     code = """

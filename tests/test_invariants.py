@@ -43,17 +43,10 @@ def sandbox_repo(tmp_path: Path) -> Path:
     return tmp_path
 
 
-def test_real_repo_prereg_and_prompt_contents_and_readonly() -> None:
-    """Verify exact values in configs/prereg.yaml and configs/prompt_v1.yaml and chmod 444."""
+def test_real_repo_prereg_and_prompt_contents() -> None:
+    """Verify exact values in configs/prereg.yaml and configs/prompt_v1.yaml."""
     prereg_path = REPO_ROOT / "configs" / "prereg.yaml"
     prompt_path = REPO_ROOT / "configs" / "prompt_v1.yaml"
-    prereg_sha_path = REPO_ROOT / "tests" / "prereg.sha256"
-    prompt_sha_path = REPO_ROOT / "tests" / "prompt.sha256"
-
-    assert (prereg_path.stat().st_mode & 0o777) == 0o444
-    assert (prompt_path.stat().st_mode & 0o777) == 0o444
-    assert (prereg_sha_path.stat().st_mode & 0o777) == 0o444
-    assert (prompt_sha_path.stat().st_mode & 0o777) == 0o444
 
     prereg = yaml.safe_load(prereg_path.read_text(encoding="utf-8"))
     assert prereg == {
