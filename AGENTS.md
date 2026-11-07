@@ -24,7 +24,7 @@ Pre-registered H1 (primary model Qwen3-8B): adding 8 hard negatives to gold-only
 8. Commit small and often: "<module>: <what>". Do not put test claims in commit messages; test results belong in the REVIEW PACKET.
 9. Do not modify files outside the task's listed scope.
 10. Run every project command inside the conda environment `rag`. Never use the system or Homebrew Python. Never pip install outside that environment.
-11. Never set KMP_DUPLICATE_LIB_OK. If an OpenMP library conflict occurs, STOP and report it. Compute embeddings and FAISS search in separate processes (save embeddings to disk in between).
+11. Never set KMP_DUPLICATE_LIB_OK. If an OpenMP library conflict occurs, STOP and report it. Compute embeddings and FAISS search in separate processes (save embeddings to disk in between). Import omp_guard before torch, transformers or sentence_transformers.
 
 ## Layout
 README.md, requirements.txt, AGENTS.md, Makefile, configs/, src/, scripts/, tests/, data/ (frozen/ is read-only), results/, docs/ (reference/ is read-only).

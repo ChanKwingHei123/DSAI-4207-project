@@ -55,3 +55,7 @@ python -m pip check
 2. Every pinned package in `requirements.txt` matches its exact installed version (plus `requirements-mac.txt` when running on `arm64` macOS).
 3. `mx.default_device()` is the GPU (`Device(gpu, 0)`) when `mlx` is present on `arm64` macOS.
 4. A one-sentence embedding from `sentence-transformers/all-MiniLM-L6-v2` has shape `(1, 384)` and L2 norm `1.0`.
+
+## 4. OpenMP Guard (AGENTS.md Hard Rule 11)
+Import omp_guard before torch, transformers or sentence_transformers.
+(In `scripts/` or `src/`, ensure the repository root is on `sys.path` and run `import src.omp_guard` before importing `torch`, `transformers`, or `sentence_transformers`; never set `KMP_DUPLICATE_LIB_OK`.)
