@@ -1,0 +1,7 @@
+Context:
+[Document 1] AAA
+[Document 2] BBB
+[Document 3] CCC
+
+Question: QQQ
+Answer with the shortest text span that answers the question, no explanation.
