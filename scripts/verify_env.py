@@ -9,20 +9,23 @@ from pathlib import Path
 import platform
 import sys
 
-import faiss
-import matplotlib
-import numpy as np
-import pandas as pd
-import pytest
-import scipy
-import sklearn
-import torch
-import tqdm
-import transformers
-import yaml
-from sentence_transformers import SentenceTransformer
-
 REPO_ROOT = Path(__file__).resolve().parent.parent
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+import src.omp_guard  # noqa: F401, E402
+import faiss  # noqa: E402
+import matplotlib  # noqa: E402
+import numpy as np  # noqa: E402
+import pandas as pd  # noqa: E402
+import pytest  # noqa: E402
+import scipy  # noqa: E402
+import sklearn  # noqa: E402
+import torch  # noqa: E402
+import tqdm  # noqa: E402
+import transformers  # noqa: E402
+import yaml  # noqa: E402
+from sentence_transformers import SentenceTransformer  # noqa: E402
 
 
 def parse_pins(req_path: Path) -> dict[str, str]:
