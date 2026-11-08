@@ -6,7 +6,7 @@ We evaluate our models using a strictly controlled subset of the official SQuAD 
 • Main Evaluation Grid (\(N=500\)): Used for the comprehensive multi-variable evaluation sweep.
 
 2. Distractor Selection and Context Controls
-For each question, a pool of distractor contexts is constructed to analyze model degradation across variable volumetric doses \(n \in \{0, 1, 2, 4, 8\}\). We test two distinct context topologies:
+For each question, a pool of distractor contexts is constructed to analyze model degradation across variable volumetric doses \(n \in \{0, 1, 2, 4, 8\}\). We test two distinct context topologies:<br>
 • Topically Related (Hard) Distractors: Formed by extracting the top-16 nearest-neighbor text fragments from the dev-set paragraph pool using a dense index built with all-MiniLM-L6-v2 embeddings and a FAISS backend. The gold paragraph containing the actual answer string is explicitly excluded from this candidate pool.<br>
 • Disjoint (Random) Distractors: Formed by sampling length-matched fragments from entirely non-gold articles. To keep the structural and attention mechanics uniform, random passages are matched rank-by-rank to fall within a tight \(\pm20\%\) token length bound relative to their hard-negative counterparts.<br>
 2.1 Compliance and Leak Filters
