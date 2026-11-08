@@ -1,4 +1,4 @@
-"""Tests for distractor construction, leak filtering, length matching, and prompt-input files (Step p2c)."""
+"""Tests for distractor construction, token-sequence leak filtering, progressive length matching, and prompt-input files (Step p2c)."""
 
 from __future__ import annotations
 
@@ -33,11 +33,14 @@ from src.distractors import (  # noqa: E402
     build_distractor_inputs,
     gold_insertion_index,
     has_answer_leak,
+    is_degenerate_gold_answers,
     is_within_length_tolerance,
     load_dev_paragraph_pool,
     load_hf_token_length_fn,
     make_question_seed_rng,
     normalize_squad,
+    normalize_squad_tokens,
+    select_progressive_window_candidates,
     sha256_file,
 )
 
@@ -78,21 +81,71 @@ def test_hard_rule_11_omp_guard_and_kmp_rejection(monkeypatch: pytest.MonkeyPatc
         assert_no_kmp_duplicate_lib_ok()
 
 
-def test_squad_normalization_and_leak_filter_unit() -> None:
-    """Unit test official SQuAD normalization and answer-leak substring rejection."""
+def test_token_sequence_leak_filter_and_degenerate_unit() -> None:
+    """Unit test official SQuAD token-sequence leak filter and degenerate empty-answer detection."""
     assert normalize_squad("The   Quick, Brown-Fox! (A test)") == "quick brownfox test"
-    assert normalize_squad("Maciot de Bethencourt.") == "maciot de bethencourt"
+    assert normalize_squad_tokens("Maciot de Bethencourt.") == ["maciot", "de", "bethencourt"]
 
-    norm_gold = [normalize_squad("Maciot de Bethencourt"), normalize_squad("Bethencourt")]
-    leaking_passage = normalize_squad(
-        "In 1418, Maciot de Bethencourt sold the rights to the islands."
+    # 1. One-character answer "p" (or "#P" -> "p") must NOT reject a passage containing "people"
+    assert normalize_squad_tokens("#P") == ["p"]
+    assert has_answer_leak("Many people study complexity theory.", ["#P", "p"]) is False
+    assert has_answer_leak("The class #P contains counting problems.", ["#P"]) is True
+
+    # 2. Multi-word answer must match contiguously in token order
+    assert (
+        has_answer_leak(
+            "In 1964, the European Court of Justice ruled on the treaty.",
+            ["Court of Justice"],
+        )
+        is True
     )
-    clean_passage = normalize_squad(
-        "The Normans were descendants of Norse raiders who settled in Normandy."
+    assert (
+        has_answer_leak(
+            "The high court of appeals sought justice for all citizens.",
+            ["Court of Justice"],
+        )
+        is False
     )
 
-    assert has_answer_leak(leaking_passage, norm_gold) is True
-    assert has_answer_leak(clean_passage, norm_gold) is False
+    # 3. Empty normalized answers are flagged as degenerate
+    assert is_degenerate_gold_answers(["the", "valid answer"]) is True
+    assert is_degenerate_gold_answers(["...!", "??"]) is True
+    assert is_degenerate_gold_answers([]) is True
+    assert is_degenerate_gold_answers(["Maciot de Bethencourt", "#P"]) is False
+
+
+def test_progressive_window_selection_unit() -> None:
+    """Unit test progressive length-matching window (5% -> 10% -> 20% -> None)."""
+    pool = [
+        {"paragraph_id": [1, 0], "qwen3_token_length": 104},  # +4% (in 5%)
+        {"paragraph_id": [1, 1], "qwen3_token_length": 108},  # +8% (in 10%, not 5%)
+        {"paragraph_id": [1, 2], "qwen3_token_length": 116},  # +16% (in 20%, not 10%)
+        {"paragraph_id": [1, 3], "qwen3_token_length": 130},  # +30% (outside 20%)
+    ]
+    used: set[tuple[int, int]] = set()
+
+    # Step 1: 5% candidate available -> chooses 5% window ([1, 0] only)
+    win1, cands1 = select_progressive_window_candidates(pool, used, target_qwen_len=100)
+    assert win1 == 5
+    assert [c["paragraph_id"] for c in cands1] == [[1, 0]]
+    used.add((1, 0))
+
+    # Step 2: 5% exhausted -> chooses 10% window ([1, 1] only)
+    win2, cands2 = select_progressive_window_candidates(pool, used, target_qwen_len=100)
+    assert win2 == 10
+    assert [c["paragraph_id"] for c in cands2] == [[1, 1]]
+    used.add((1, 1))
+
+    # Step 3: 5% and 10% exhausted -> chooses 20% window ([1, 2] only)
+    win3, cands3 = select_progressive_window_candidates(pool, used, target_qwen_len=100)
+    assert win3 == 20
+    assert [c["paragraph_id"] for c in cands3] == [[1, 2]]
+    used.add((1, 2))
+
+    # Step 4: 20% exhausted -> returns (None, [])
+    win4, cands4 = select_progressive_window_candidates(pool, used, target_qwen_len=100)
+    assert win4 is None
+    assert cands4 == []
 
 
 def test_rng_determinism_and_seed_sensitivity_unit() -> None:
@@ -126,14 +179,13 @@ def test_gold_insertion_index_and_nested_prefixes_unit() -> None:
         without_gold = [pid for pid in assembled if pid != gold_pid]
         assert without_gold == distractors[:n]
 
-    # Verify nested prefixes across n = 1, 2, 4, 8
     assert distractors[:1] == distractors[:2][:1]
     assert distractors[:2] == distractors[:4][:2]
     assert distractors[:4] == distractors[:8][:4]
 
 
 def test_synthetic_failure_modes_stop_and_report(tmp_path: Path) -> None:
-    """Verify builder records and stops when <20 hard candidates remain or a random slot has 0 matches."""
+    """Verify builder flags degenerate questions and <20 hard-pool questions and records them in build_report.md."""
     prereg_path = DEFAULT_PREREG_PATH
     raw_path = tmp_path / "raw.json"
     sampling_dir = tmp_path / "sampling"
@@ -141,7 +193,6 @@ def test_synthetic_failure_modes_stop_and_report(tmp_path: Path) -> None:
     candidates_path = tmp_path / "hard_candidates.jsonl"
     out_dir = tmp_path / "inputs"
 
-    # Build a synthetic raw dataset where most top-30 candidates leak the gold answer "unicorn"
     articles = [
         {
             "title": "Art0",
@@ -167,7 +218,7 @@ def test_synthetic_failure_modes_stop_and_report(tmp_path: Path) -> None:
     ]
     raw_path.write_text(json.dumps({"data": articles}), encoding="utf-8")
 
-    q_rec = {
+    q_leak_heavy = {
         "question_id": "q_leak_heavy",
         "article_index": 0,
         "article_title": "Art0",
@@ -176,21 +227,43 @@ def test_synthetic_failure_modes_stop_and_report(tmp_path: Path) -> None:
         "question_text": "What animal?",
         "gold_answers": ["unicorn"],
     }
-    (sampling_dir / "main.json").write_text(json.dumps([q_rec]), encoding="utf-8")
+    q_degenerate = {
+        "question_id": "q_degenerate",
+        "article_index": 0,
+        "article_title": "Art0",
+        "paragraph_id": [0, 0],
+        "paragraph_index": 0,
+        "question_text": "Which article word?",
+        "gold_answers": ["the", "an!"],
+    }
+    (sampling_dir / "main.json").write_text(
+        json.dumps([q_leak_heavy, q_degenerate]), encoding="utf-8"
+    )
     (sampling_dir / "pilot.json").write_text(json.dumps([]), encoding="utf-8")
     (sampling_dir / "reserve.json").write_text(json.dumps([]), encoding="utf-8")
 
-    # 19 leaking + 11 clean = only 11 non-rejected (< 20 required)
-    cand_row = {
+    cand_row_1 = {
         "question_id": "q_leak_heavy",
         "split": "main",
         "gold_paragraph_id": [0, 0],
+        "gold_score": 0.85,
         "ranked_paragraph_ids": [[0, i] for i in range(1, 31)],
         "scores": [1.0 - i * 0.01 for i in range(30)],
     }
-    candidates_path.write_text(json.dumps(cand_row) + "\n", encoding="utf-8")
+    cand_row_2 = {
+        "question_id": "q_degenerate",
+        "split": "main",
+        "gold_paragraph_id": [0, 0],
+        "gold_score": 0.80,
+        "ranked_paragraph_ids": [[0, i] for i in range(1, 31)],
+        "scores": [1.0 - i * 0.01 for i in range(30)],
+    }
+    candidates_path.write_text(
+        json.dumps(cand_row_1) + "\n" + json.dumps(cand_row_2) + "\n",
+        encoding="utf-8",
+    )
 
-    with pytest.raises(RuntimeError, match="insufficient_hard_pool=1"):
+    with pytest.raises(RuntimeError, match="degenerate=1, insufficient_hard_pool=1"):
         build_distractor_inputs(
             prereg_path=prereg_path,
             raw_path=raw_path,
@@ -204,11 +277,12 @@ def test_synthetic_failure_modes_stop_and_report(tmp_path: Path) -> None:
 
     report_text = (out_dir / "build_report.md").read_text(encoding="utf-8")
     assert "q_leak_heavy" in report_text
+    assert "q_degenerate" in report_text
 
 
 @pytest.fixture(scope="module")
 def built_inputs_environment() -> dict[str, Any]:
-    """Ensure real distractor inputs are built and return loaded pool, questions, and rows."""
+    """Ensure real distractor inputs are built and return loaded pool, candidates, and rows."""
     if not DEFAULT_RAW_PATH.exists():
         pytest.skip(f"Missing raw SQuAD 2.0 file at {DEFAULT_RAW_PATH}")
 
@@ -233,6 +307,12 @@ def built_inputs_environment() -> dict[str, Any]:
     else:
         summary = {}
 
+    candidates_by_qid: dict[str, dict[str, Any]] = {}
+    for line in DEFAULT_CANDIDATES_PATH.read_text(encoding="utf-8").splitlines():
+        if line.strip():
+            rec = json.loads(line)
+            candidates_by_qid[rec["question_id"]] = rec
+
     rows_by_key: dict[str, list[dict[str, Any]]] = {}
     for split in SPLITS:
         for seed in (0, 1, 2):
@@ -247,6 +327,7 @@ def built_inputs_environment() -> dict[str, Any]:
     return {
         "pool_list": pool_list,
         "pool_by_pid": pool_by_pid,
+        "candidates_by_qid": candidates_by_qid,
         "rows_by_key": rows_by_key,
         "qwen3_fn": qwen3_fn,
         "llama3_fn": llama3_fn,
@@ -264,15 +345,15 @@ def test_all_paragraph_ids_exist_in_dev_pool_and_split_counts(
     assert len(pool_by_pid) == 1204
 
     expected_counts = {
-        "main_seed0": 475,
-        "main_seed1": 476,
-        "main_seed2": 475,
-        "pilot_seed0": 45,
-        "pilot_seed1": 45,
-        "pilot_seed2": 44,
-        "reserve_seed0": 37,
-        "reserve_seed1": 39,
-        "reserve_seed2": 39,
+        "main_seed0": 493,
+        "main_seed1": 495,
+        "main_seed2": 494,
+        "pilot_seed0": 49,
+        "pilot_seed1": 49,
+        "pilot_seed2": 48,
+        "reserve_seed0": 39,
+        "reserve_seed1": 40,
+        "reserve_seed2": 40,
     }
     for key, exp_count in expected_counts.items():
         rows = rows_by_key[key]
@@ -280,12 +361,44 @@ def test_all_paragraph_ids_exist_in_dev_pool_and_split_counts(
         for row in rows:
             assert tuple(row["gold_paragraph_id"]) in pool_by_pid
             assert len(row["hard_pool_paragraph_ids"]) == 20
+            assert row["rejection_counts"]["candidate_depth"] == 100
             for pid in row["hard_pool_paragraph_ids"]:
                 assert tuple(pid) in pool_by_pid
             for pid in row["hard_paragraph_ids"]:
                 assert tuple(pid) in pool_by_pid
             for pid in row["random_paragraph_ids"]:
                 assert tuple(pid) in pool_by_pid
+
+
+@requires_raw_squad
+def test_hard_candidate_scores_align_with_hard_paragraph_ids(
+    built_inputs_environment: dict[str, Any],
+) -> None:
+    """Verify hard_candidate_scores[i] matches the score of hard_paragraph_ids[i] in hard_candidates.jsonl for every row."""
+    rows_by_key = built_inputs_environment["rows_by_key"]
+    candidates_by_qid = built_inputs_environment["candidates_by_qid"]
+
+    for key, rows in rows_by_key.items():
+        for row in rows:
+            qid = row["question_id"]
+            cand_rec = candidates_by_qid[qid]
+            score_by_pid = {
+                tuple(pid): float(score)
+                for pid, score in zip(cand_rec["ranked_paragraph_ids"], cand_rec["scores"])
+            }
+            assert row["gold_score"] == float(cand_rec["gold_score"])
+
+            hard_pids = row["hard_paragraph_ids"]
+            hard_scores = row["hard_candidate_scores"]
+            assert len(hard_pids) == len(hard_scores) == 8
+
+            for slot_idx, (pid, score) in enumerate(zip(hard_pids, hard_scores)):
+                pid_t = tuple(pid)
+                assert pid_t in score_by_pid, f"PID {pid} not in top-100 for {qid}"
+                assert score == score_by_pid[pid_t], (
+                    f"Score mismatch at slot {slot_idx} for {qid} ({key}): "
+                    f"{score} != {score_by_pid[pid_t]}"
+                )
 
 
 @requires_raw_squad
@@ -310,22 +423,23 @@ def test_gold_never_among_distractors(built_inputs_environment: dict[str, Any]) 
 def test_no_answer_leak_in_any_distractor(
     built_inputs_environment: dict[str, Any],
 ) -> None:
-    """Verify no hard-pool, hard, or random distractor contains any normalized gold answer substring."""
+    """Verify no hard-pool, hard, or random distractor contains any gold answer's normalized token sequence."""
     pool_by_pid = built_inputs_environment["pool_by_pid"]
     rows_by_key = built_inputs_environment["rows_by_key"]
 
     for key, rows in rows_by_key.items():
         for row in rows:
-            norm_gold = [normalize_squad(a) for a in row["gold_answers"]]
+            assert not is_degenerate_gold_answers(row["gold_answers"])
+            norm_gold_toks = [normalize_squad_tokens(a) for a in row["gold_answers"]]
             for list_name in (
                 "hard_pool_paragraph_ids",
                 "hard_paragraph_ids",
                 "random_paragraph_ids",
             ):
                 for pid in row[list_name]:
-                    norm_ctx = pool_by_pid[tuple(pid)]["normalized_context"]
+                    passage_toks = pool_by_pid[tuple(pid)]["normalized_tokens"]
                     assert not has_answer_leak(
-                        norm_ctx, norm_gold
+                        passage_toks, norm_gold_toks
                     ), f"Answer leak detected in {list_name} passage {pid} for {row['question_id']} ({key})"
 
 
@@ -355,10 +469,10 @@ def test_nested_prefix_property_and_no_duplicates(
 
 
 @requires_raw_squad
-def test_length_tolerance_for_every_slot(
+def test_length_tolerance_and_progressive_windows_for_every_slot(
     built_inputs_environment: dict[str, Any],
 ) -> None:
-    """Verify every random passage is within +/-20% Qwen3 token length of its matched hard negative."""
+    """Verify every random passage satisfies its recorded progressive window (5/10/20%) and the +/-20% limit."""
     pool_by_pid = built_inputs_environment["pool_by_pid"]
     rows_by_key = built_inputs_environment["rows_by_key"]
 
@@ -366,24 +480,31 @@ def test_length_tolerance_for_every_slot(
         for row in rows:
             hard_pids = row["hard_paragraph_ids"]
             rand_pids = row["random_paragraph_ids"]
+            windows = row["random_length_match_windows"]
             hard_q_lens = row["token_lengths"]["qwen3"]["hard"]
             rand_q_lens = row["token_lengths"]["qwen3"]["random"]
 
             assert len(hard_q_lens) == 8
             assert len(rand_q_lens) == 8
+            assert len(windows) == 8
 
             for slot_idx in range(8):
                 h_pid = tuple(hard_pids[slot_idx])
                 r_pid = tuple(rand_pids[slot_idx])
                 h_len = hard_q_lens[slot_idx]
                 r_len = rand_q_lens[slot_idx]
+                win_pct = windows[slot_idx]
 
+                assert win_pct in (5, 10, 20)
                 assert h_len == pool_by_pid[h_pid]["qwen3_token_length"]
                 assert r_len == pool_by_pid[r_pid]["qwen3_token_length"]
-                assert is_within_length_tolerance(r_len, h_len, tolerance=0.20), (
-                    f"Slot {slot_idx} length tolerance violated for {row['question_id']} ({key}): "
+                assert is_within_length_tolerance(
+                    r_len, h_len, tolerance=win_pct / 100.0
+                ), (
+                    f"Slot {slot_idx} violated recorded window {win_pct}% for {row['question_id']} ({key}): "
                     f"hard={h_len}, random={r_len}"
                 )
+                assert is_within_length_tolerance(r_len, h_len, tolerance=0.20)
 
 
 @requires_raw_squad
