@@ -9,6 +9,7 @@ Spawns two strictly isolated OS subprocesses:
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -25,7 +26,36 @@ DEFAULT_SAMPLING_DIR = REPO_ROOT / "data" / "sampling"
 DEFAULT_INDEX_DIR = REPO_ROOT / "results" / "index"
 DEFAULT_CANDIDATES_PATH = REPO_ROOT / "data" / "candidates" / "hard_candidates.jsonl"
 DEFAULT_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
-DEFAULT_TOP_K = 30
+DEFAULT_TOP_K = 100
+
+
+def _sha256_file(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _embeddings_valid(index_dir: Path) -> bool:
+    """Return True if precomputed .npy and metadata files exist and match manifest.json hashes."""
+    manifest_path = index_dir / "manifest.json"
+    para_emb = index_dir / "paragraph_embeddings.npy"
+    q_emb = index_dir / "question_embeddings.npy"
+    para_meta = index_dir / "paragraphs.json"
+    q_meta = index_dir / "questions.json"
+
+    for p in (manifest_path, para_emb, q_emb, para_meta, q_meta):
+        if not p.exists():
+            return False
+
+    try:
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        files = manifest["files"]
+        return (
+            _sha256_file(para_emb) == files["paragraph_embeddings"]["sha256"]
+            and _sha256_file(q_emb) == files["question_embeddings"]["sha256"]
+            and _sha256_file(para_meta) == files["paragraphs_meta"]["sha256"]
+            and _sha256_file(q_meta) == files["questions_meta"]["sha256"]
+        )
+    except Exception:
+        return False
 
 
 def run_retrieval_pipeline(
@@ -36,6 +66,7 @@ def run_retrieval_pipeline(
     model_name: str = DEFAULT_MODEL_NAME,
     top_k: int = DEFAULT_TOP_K,
     batch_size: int = 64,
+    reuse_embeddings_if_valid: bool = False,
 ) -> dict[str, Any]:
     """Run Process 1 (embedding) and Process 2 (FAISS search) in separate OS processes."""
     if "KMP_DUPLICATE_LIB_OK" in os.environ:
@@ -46,25 +77,26 @@ def run_retrieval_pipeline(
     env = dict(os.environ)
     env.pop("KMP_DUPLICATE_LIB_OK", None)
 
-    cmd_embed = [
-        sys.executable,
-        str(EMBED_SCRIPT),
-        "--raw-path",
-        str(raw_path),
-        "--sampling-dir",
-        str(sampling_dir),
-        "--index-dir",
-        str(index_dir),
-        "--model-name",
-        model_name,
-        "--batch-size",
-        str(batch_size),
-    ]
-    res_embed = subprocess.run(cmd_embed, env=env, check=False)
-    if res_embed.returncode != 0:
-        raise RuntimeError(
-            f"Embedding subprocess failed with exit code {res_embed.returncode}"
-        )
+    if not (reuse_embeddings_if_valid and _embeddings_valid(index_dir)):
+        cmd_embed = [
+            sys.executable,
+            str(EMBED_SCRIPT),
+            "--raw-path",
+            str(raw_path),
+            "--sampling-dir",
+            str(sampling_dir),
+            "--index-dir",
+            str(index_dir),
+            "--model-name",
+            model_name,
+            "--batch-size",
+            str(batch_size),
+        ]
+        res_embed = subprocess.run(cmd_embed, env=env, check=False)
+        if res_embed.returncode != 0:
+            raise RuntimeError(
+                f"Embedding subprocess failed with exit code {res_embed.returncode}"
+            )
 
     cmd_search = [
         sys.executable,
