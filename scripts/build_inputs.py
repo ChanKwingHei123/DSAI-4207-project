@@ -2,7 +2,7 @@
 """CLI entry point to build distractor sets and prompt-input JSONL files (Step p2c).
 
 Hard Rule 11 compliance:
-- Rejects KMP_DUPLICATE_LIB_OK if set in environment.
+- Rejects KMP_DUPLICATE_LIB_OK if set in environment prior to omp_guard.
 - Imports src.omp_guard before any transformers/torch imports.
 - Enforces HF_HUB_OFFLINE=1 (no network use).
 """
@@ -56,7 +56,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--strict",
         action="store_true",
-        help="Raise RuntimeError if any question has <20 hard candidates or any random slot fails.",
+        help="Raise RuntimeError if any question is degenerate, has <20 hard candidates, or any random slot fails.",
     )
     return parser.parse_args(argv)
 
@@ -77,16 +77,24 @@ def main(argv: list[str] | None = None) -> int:
     q_s = summary["length_matching_stats"]["qwen3"]
     l_s = summary["length_matching_stats"]["llama3"]
     rej = summary["rejection_stats"]
+    wstats = summary["window_stats"]
+    degen_count = len(summary["degenerate_questions"])
     insuff_count = len(summary["insufficient_hard_pool_questions"])
     failed_slot_count = len(summary["failed_random_slots"])
 
     print(
         f"[Build Inputs] questions={summary['total_questions']} "
-        f"files={len(summary['output_files'])} "
-        f"top30_rejections_total={rej['hard_top30_rejected_sum']} "
-        f"(mean={rej['hard_top30_rejected_mean']:.4f}, max={rej['hard_top30_rejected_max']}) "
+        f"depth={summary['candidate_depth']} "
+        f"top_k_rejections_total={rej['hard_top_k_rejected_sum']} "
+        f"(mean={rej['hard_top_k_rejected_mean']:.4f}, max={rej['hard_top_k_rejected_max']}) "
+        f"degenerate={degen_count} "
         f"insufficient_hard_pool={insuff_count} "
         f"failed_random_slots={failed_slot_count}"
+    )
+    print(
+        f"[Windows Used] 5%={wstats['counts']['5']} ({wstats['fractions']['5']*100:.2f}%) | "
+        f"10%={wstats['counts']['10']} ({wstats['fractions']['10']*100:.2f}%) | "
+        f"20%={wstats['counts']['20']} ({wstats['fractions']['20']*100:.2f}%)"
     )
     print(
         f"[Length Match Qwen3] hard_mean={q_s['hard_mean']:.2f} "
