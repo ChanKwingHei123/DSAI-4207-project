@@ -1,0 +1,1445 @@
+[
+  {
+    "question_id": "56de148dcffd8e1900b4b5bd",
+    "article_index": 0,
+    "paragraph_id": [
+      0,
+      11
+    ],
+    "question_text": "When did Dyrrachium  fall to the Normans?",
+    "gold_answers": [
+      "1082",
+      "February 1082",
+      "February 1082"
+    ]
+  },
+  {
+    "question_id": "56de16ca4396321400ee25c7",
+    "article_index": 0,
+    "paragraph_id": [
+      0,
+      16
+    ],
+    "question_text": "When was the Battle of Hastings?",
+    "gold_answers": [
+      "1066",
+      "In 1066",
+      "1066"
+    ]
+  },
+  {
+    "question_id": "56e17a7ccd28a01900c679a4",
+    "article_index": 1,
+    "paragraph_id": [
+      1,
+      3
+    ],
+    "question_text": "What is another name for any given measure of input associated with a problem?",
+    "gold_answers": [
+      "instances",
+      "the instance",
+      "instance"
+    ]
+  },
+  {
+    "question_id": "56e1b754cd28a01900c67abc",
+    "article_index": 1,
+    "paragraph_id": [
+      1,
+      18
+    ],
+    "question_text": "Time and space are both examples of what type of resource?",
+    "gold_answers": [
+      "complexity resources",
+      "complexity resources",
+      "complexity"
+    ]
+  },
+  {
+    "question_id": "56e20a3ae3433e140042324d",
+    "article_index": 1,
+    "paragraph_id": [
+      1,
+      47
+    ],
+    "question_text": "What is the paper written by Richard Karp in 1972 that ushered in a new era of understanding between intractability and NP-complete problems?",
+    "gold_answers": [
+      "\"Reducibility Among Combinatorial Problems\"",
+      "Reducibility Among Combinatorial Problems",
+      "\"Reducibility Among Combinatorial Problems\""
+    ]
+  },
+  {
+    "question_id": "5705ffde52bb891400689784",
+    "article_index": 2,
+    "paragraph_id": [
+      2,
+      19
+    ],
+    "question_text": "Which fault can produce a magnitude earthquake of 8.0?",
+    "gold_answers": [
+      "San Andreas",
+      "the San Andreas Fault",
+      "San Andreas Fault"
+    ]
+  },
+  {
+    "question_id": "57060cc352bb89140068980f",
+    "article_index": 2,
+    "paragraph_id": [
+      2,
+      27
+    ],
+    "question_text": "Downtown Santa Monica and Downtown Glendale are a part of which area?",
+    "gold_answers": [
+      "Los Angeles Area",
+      "the Los Angeles Area",
+      "major business"
+    ]
+  },
+  {
+    "question_id": "570961aa200fba1400367f19",
+    "article_index": 3,
+    "paragraph_id": [
+      3,
+      7
+    ],
+    "question_text": "How many households had BSkyB service in 1994?",
+    "gold_answers": [
+      "3.5 million",
+      "3.5 million",
+      "3.5 million"
+    ]
+  },
+  {
+    "question_id": "57097c8fed30961900e841f5",
+    "article_index": 3,
+    "paragraph_id": [
+      3,
+      20
+    ],
+    "question_text": "What was the UK governments benefits agenchy checking in 2012?",
+    "gold_answers": [
+      "Sky TV bills",
+      "claimants' \"Sky TV bills",
+      "claimants"
+    ]
+  },
+  {
+    "question_id": "570d2556fed7b91900d45c4b",
+    "article_index": 4,
+    "paragraph_id": [
+      4,
+      1
+    ],
+    "question_text": "What were the conditions for miners in the gold fields in Victoria?",
+    "gold_answers": [
+      "cramped and unsanitary",
+      "cramped and unsanitary",
+      "cramped and unsanitary"
+    ]
+  },
+  {
+    "question_id": "570d2c20fed7b91900d45cab",
+    "article_index": 4,
+    "paragraph_id": [
+      4,
+      6
+    ],
+    "question_text": "When was Victoria first settled?",
+    "gold_answers": [
+      "1803",
+      "1803",
+      "1803"
+    ]
+  },
+  {
+    "question_id": "57108c95b654c5140001f97c",
+    "article_index": 5,
+    "paragraph_id": [
+      5,
+      12
+    ],
+    "question_text": "What is located within this district?",
+    "gold_answers": [
+      "the oldest street in the United States of America",
+      "the oldest street in the United States of America",
+      "the oldest street in the United States of America"
+    ]
+  },
+  {
+    "question_id": "5710eca0a58dae1900cd6b3e",
+    "article_index": 5,
+    "paragraph_id": [
+      5,
+      28
+    ],
+    "question_text": "When were these settlers naturalized as English colonists?",
+    "gold_answers": [
+      "12 May 1705",
+      "1705",
+      "12 May 1705"
+    ]
+  },
+  {
+    "question_id": "5711163bb654c5140001fb13",
+    "article_index": 5,
+    "paragraph_id": [
+      5,
+      38
+    ],
+    "question_text": "What present day county is New Rochelle in?",
+    "gold_answers": [
+      "Westchester",
+      "Westchester",
+      "Westchester"
+    ]
+  },
+  {
+    "question_id": "5711163bb654c5140001fb17",
+    "article_index": 5,
+    "paragraph_id": [
+      5,
+      38
+    ],
+    "question_text": "What is the name of the third, permanent Huguenot church in New Rochelle?",
+    "gold_answers": [
+      "Trinity-St. Paul's Episcopal Church",
+      "Trinity-St. Paul's Episcopal Church",
+      "Trinity-St. Paul's Episcopal Church"
+    ]
+  },
+  {
+    "question_id": "57113c6da58dae1900cd6d36",
+    "article_index": 6,
+    "paragraph_id": [
+      6,
+      8
+    ],
+    "question_text": "In what year did Jerónimo de Ayanz y Beaumont patent a water pump for draining mines?",
+    "gold_answers": [
+      "1606",
+      "1606",
+      "1606",
+      "1606"
+    ]
+  },
+  {
+    "question_id": "57114667a58dae1900cd6d82",
+    "article_index": 6,
+    "paragraph_id": [
+      6,
+      12
+    ],
+    "question_text": "What company developed the most successful steam engine indicator?",
+    "gold_answers": [
+      "Charles Porter",
+      "Charles Porter",
+      "Charles Porter"
+    ]
+  },
+  {
+    "question_id": "571154c72419e31400955587",
+    "article_index": 6,
+    "paragraph_id": [
+      6,
+      22
+    ],
+    "question_text": "What percentage of electricity was made by steam turbine in the 1990s?",
+    "gold_answers": [
+      "90",
+      "90%",
+      "90%"
+    ]
+  },
+  {
+    "question_id": "5711628a2419e314009555e0",
+    "article_index": 6,
+    "paragraph_id": [
+      6,
+      39
+    ],
+    "question_text": "What award was given to Corliss?",
+    "gold_answers": [
+      "Rumford medal",
+      "Rumford medal",
+      "the Rumford medal"
+    ]
+  },
+  {
+    "question_id": "571c8eb9dd7acb1400e4c0f9",
+    "article_index": 7,
+    "paragraph_id": [
+      7,
+      13
+    ],
+    "question_text": "In what year did Lavoisier publish his work on combustion?",
+    "gold_answers": [
+      "1777",
+      "1777",
+      "1777",
+      "1777",
+      "1777"
+    ]
+  },
+  {
+    "question_id": "571cb27fdd7acb1400e4c135",
+    "article_index": 7,
+    "paragraph_id": [
+      7,
+      22
+    ],
+    "question_text": "What form of oxygen do marine animals acquire in greater amounts during cooler climatic conditions?",
+    "gold_answers": [
+      "oxygen-18",
+      "oxygen-18",
+      "oxygen-16",
+      "oxygen-18",
+      "oxygen-18"
+    ]
+  },
+  {
+    "question_id": "571ccd9b5efbb31900334df9",
+    "article_index": 7,
+    "paragraph_id": [
+      7,
+      30
+    ],
+    "question_text": "What percentage of oxygen will a zeolite sieve produce?",
+    "gold_answers": [
+      "90% to 93%",
+      "90% to 93%",
+      "90% to 93%",
+      "90% to 93%",
+      "90% to 93%"
+    ]
+  },
+  {
+    "question_id": "571cd88ddd7acb1400e4c18f",
+    "article_index": 7,
+    "paragraph_id": [
+      7,
+      36
+    ],
+    "question_text": "What type of reaction is present in the emergency oxygen generator of an airplane?",
+    "gold_answers": [
+      "exothermic",
+      "exothermic",
+      "exothermic",
+      "exothermic",
+      "exothermic reaction"
+    ]
+  },
+  {
+    "question_id": "5725bcb6271a42140099d0ee",
+    "article_index": 8,
+    "paragraph_id": [
+      8,
+      5
+    ],
+    "question_text": "How much was the emergency aid to Israel?",
+    "gold_answers": [
+      "$2.2 billion",
+      "$2.2 billion",
+      "$2.2 billion",
+      "$2.2 billion",
+      "$2.2 billion"
+    ]
+  },
+  {
+    "question_id": "57265e11708984140094c3bd",
+    "article_index": 8,
+    "paragraph_id": [
+      8,
+      23
+    ],
+    "question_text": "Why did Saudi Arabia try to increase production, and reduce profits for high cost producers?",
+    "gold_answers": [
+      "recover market share",
+      "trying to recover market share",
+      "recover market share",
+      "to recover market share",
+      "recover market share"
+    ]
+  },
+  {
+    "question_id": "57268e2bf1498d1400e8e3b4",
+    "article_index": 9,
+    "paragraph_id": [
+      9,
+      4
+    ],
+    "question_text": "When did Greenland sign a Treaty granting them special status?",
+    "gold_answers": [
+      "1985",
+      "1985",
+      "1985",
+      "1985"
+    ]
+  },
+  {
+    "question_id": "57268f2bf1498d1400e8e3c6",
+    "article_index": 9,
+    "paragraph_id": [
+      9,
+      5
+    ],
+    "question_text": "Which caused the reform to never come into force?",
+    "gold_answers": [
+      "the referendum in France and the referendum in the Netherlands",
+      "the referendum in France and the referendum in the Netherlands",
+      "the referendum in France and the referendum in the Netherlands",
+      "the referendum in France and the referendum in the Netherlands"
+    ]
+  },
+  {
+    "question_id": "5726b718dd62a815002e8dc0",
+    "article_index": 9,
+    "paragraph_id": [
+      9,
+      30
+    ],
+    "question_text": "Article 34 meant states could be responsible for what?",
+    "gold_answers": [
+      "private actors",
+      "private actors",
+      "private actors"
+    ]
+  },
+  {
+    "question_id": "5726bc1add62a815002e8ea7",
+    "article_index": 9,
+    "paragraph_id": [
+      9,
+      34
+    ],
+    "question_text": "Which Belgian footballer claimed that he should be allowed to transfer from one football club to another when his contract was fulfilled?",
+    "gold_answers": [
+      "Jean-Marc Bosman",
+      "the Belgian Football Association v Bosman",
+      "Jean-Marc Bosman"
+    ]
+  },
+  {
+    "question_id": "5729e2316aef0514001550c7",
+    "article_index": 10,
+    "paragraph_id": [
+      10,
+      0
+    ],
+    "question_text": "Which nation contains the majority of the amazon forest?",
+    "gold_answers": [
+      "Brazil",
+      "Brazil",
+      "Brazil"
+    ]
+  },
+  {
+    "question_id": "5725c95f38643c19005accf7",
+    "article_index": 10,
+    "paragraph_id": [
+      10,
+      5
+    ],
+    "question_text": "How many people may have lived in the Amazon region during AD 1500?",
+    "gold_answers": [
+      "5 million",
+      "5 million",
+      "5 million"
+    ]
+  },
+  {
+    "question_id": "572847dd4b864d19001648bd",
+    "article_index": 10,
+    "paragraph_id": [
+      10,
+      5
+    ],
+    "question_text": "What well-known archeologist believed the Amazon didn't have many inhabitants?",
+    "gold_answers": [
+      "Betty Meggers",
+      "Betty Meggers",
+      "Betty Meggers"
+    ]
+  },
+  {
+    "question_id": "5725cb33271a42140099d1dd",
+    "article_index": 11,
+    "paragraph_id": [
+      11,
+      5
+    ],
+    "question_text": "Ctenophora are less complex than which other phylum?",
+    "gold_answers": [
+      "bilaterians",
+      "bilaterians",
+      "bilaterians"
+    ]
+  },
+  {
+    "question_id": "57265aaf5951b619008f706b",
+    "article_index": 11,
+    "paragraph_id": [
+      11,
+      16
+    ],
+    "question_text": "What does the lobata have pair of?",
+    "gold_answers": [
+      "lobes",
+      "lobes",
+      "lobes"
+    ]
+  },
+  {
+    "question_id": "57268c01dd62a815002e8915",
+    "article_index": 11,
+    "paragraph_id": [
+      11,
+      26
+    ],
+    "question_text": "How was the population of mnemiopsis in The black Sea and the Sea of Azov brought under control?",
+    "gold_answers": [
+      "by the accidental introduction of the Mnemiopsis-eating North American ctenophore Beroe ovata,",
+      "the accidental introduction of the Mnemiopsis-eating North American ctenophore Beroe ovata",
+      "the accidental introduction of the Mnemiopsis-eating North American ctenophore Beroe ovata, and by a cooling of the local climate from 1991 to 1993"
+    ]
+  },
+  {
+    "question_id": "5725e1c4271a42140099d2da",
+    "article_index": 12,
+    "paragraph_id": [
+      12,
+      10
+    ],
+    "question_text": "Where is Audra McDonald from?",
+    "gold_answers": [
+      "Fresno",
+      "Fresno",
+      "Fresno"
+    ]
+  },
+  {
+    "question_id": "5725f6e138643c19005acf1d",
+    "article_index": 12,
+    "paragraph_id": [
+      12,
+      20
+    ],
+    "question_text": "What is the most rainfall recorded in a 24 hour period in Fresno?",
+    "gold_answers": [
+      "3.55 inches",
+      "3.55 inches (90.2 mm)",
+      "3.55 inches"
+    ]
+  },
+  {
+    "question_id": "5726249538643c19005ad081",
+    "article_index": 13,
+    "paragraph_id": [
+      13,
+      3
+    ],
+    "question_text": "What 3 things does the Air Force work key on ",
+    "gold_answers": [
+      "use of a decentralized network with multiple paths between any two points, dividing user messages into message blocks",
+      "ideas"
+    ]
+  },
+  {
+    "question_id": "5726462b708984140094c119",
+    "article_index": 13,
+    "paragraph_id": [
+      13,
+      19
+    ],
+    "question_text": "Funding limitations allowed CSNET to be what ",
+    "gold_answers": [
+      "role in spreading awareness of, and access to, national networking and was a major milestone on the path to development of the global Internet",
+      "not be directly connected to ARPANET",
+      "not be directly connected to ARPANET"
+    ]
+  },
+  {
+    "question_id": "57264d58f1498d1400e8db7d",
+    "article_index": 14,
+    "paragraph_id": [
+      14,
+      9
+    ],
+    "question_text": "What is the mortality rate of pneumonic plague?",
+    "gold_answers": [
+      "90 to 95 percent",
+      "90 to 95",
+      "90 to 95 percent"
+    ]
+  },
+  {
+    "question_id": "57264e2f708984140094c1e1",
+    "article_index": 14,
+    "paragraph_id": [
+      14,
+      10
+    ],
+    "question_text": "When did the Plos Pathogens paper come out?",
+    "gold_answers": [
+      "In October 2010",
+      "October 2010",
+      "October 2010"
+    ]
+  },
+  {
+    "question_id": "57267640f1498d1400e8e074",
+    "article_index": 15,
+    "paragraph_id": [
+      15,
+      13
+    ],
+    "question_text": "The Hawaiian Islands are made up almost entirely of what?",
+    "gold_answers": [
+      "layered basaltic lava flows",
+      "layered basaltic lava flows",
+      "layered basaltic lava flows"
+    ]
+  },
+  {
+    "question_id": "57267b3c5951b619008f7425",
+    "article_index": 15,
+    "paragraph_id": [
+      15,
+      16
+    ],
+    "question_text": "Data from physical experiments can be extrapolated to the field to understand what processes? ",
+    "gold_answers": [
+      "metamorphic processes",
+      "metamorphic",
+      "metamorphic"
+    ]
+  },
+  {
+    "question_id": "5726d8bd708984140094d35f",
+    "article_index": 16,
+    "paragraph_id": [
+      16,
+      0
+    ],
+    "question_text": "What else was used by pharmas?",
+    "gold_answers": [
+      "many other herbs not listed",
+      "many other herbs",
+      "other herbs not listed",
+      "other herbs"
+    ]
+  },
+  {
+    "question_id": "5726ea985951b619008f8263",
+    "article_index": 16,
+    "paragraph_id": [
+      16,
+      13
+    ],
+    "question_text": "What are some large pharmacy management companies?",
+    "gold_answers": [
+      "Omnicare, Kindred Healthcare and PharMerica",
+      "Omnicare, Kindred Healthcare and PharMerica",
+      "Omnicare, Kindred Healthcare and PharMerica"
+    ]
+  },
+  {
+    "question_id": "5728dafe3acd2414000e0060",
+    "article_index": 17,
+    "paragraph_id": [
+      17,
+      6
+    ],
+    "question_text": "What advise did Thoreau give the tax collector when unable to perform his duty?",
+    "gold_answers": [
+      "Resign",
+      "Resign",
+      "Resign",
+      "Resign",
+      "Resign"
+    ]
+  },
+  {
+    "question_id": "5728dddc2ca10214002da9d5",
+    "article_index": 17,
+    "paragraph_id": [
+      17,
+      8
+    ],
+    "question_text": "What dilemma is a good example of moral civil disobedience?",
+    "gold_answers": [
+      "the dilemma faced by German citizens",
+      "German citizens when Hitler's secret police demanded to know if they were hiding a Jew in their house",
+      "the dilemma faced by German citizens",
+      "the dilemma faced by German citizens when Hitler's secret police demanded to know if they were hiding a Jew in their house"
+    ]
+  },
+  {
+    "question_id": "57282dfb4b864d190016466c",
+    "article_index": 17,
+    "paragraph_id": [
+      17,
+      14
+    ],
+    "question_text": "When large groups of people all boycott a system or don't pay taxes it can be considered?",
+    "gold_answers": [
+      "coercive",
+      "civil disobedience",
+      "coercive",
+      "coercive",
+      "civil disobedience"
+    ]
+  },
+  {
+    "question_id": "57273f27dd62a815002e9a0b",
+    "article_index": 18,
+    "paragraph_id": [
+      18,
+      4
+    ],
+    "question_text": "There are other categories for what?",
+    "gold_answers": [
+      "construction service firms (e.g., engineering, architecture) and construction managers",
+      "service firms",
+      "construction service firms (e.g., engineering, architecture) and construction managers"
+    ]
+  },
+  {
+    "question_id": "5727526cdd62a815002e9b11",
+    "article_index": 18,
+    "paragraph_id": [
+      18,
+      15
+    ],
+    "question_text": "Focus on what is to ameliorate the many problems that arise from the often highly competitive and adversarial practices within the construction industry.",
+    "gold_answers": [
+      "co-operation",
+      "co-operation",
+      "co-operation"
+    ]
+  },
+  {
+    "question_id": "572746addd62a815002e9a61",
+    "article_index": 19,
+    "paragraph_id": [
+      19,
+      0
+    ],
+    "question_text": "What right do private schools have that public schools don't?",
+    "gold_answers": [
+      "to select their students",
+      "select their students",
+      "select their students"
+    ]
+  },
+  {
+    "question_id": "57274971708984140094dbbb",
+    "article_index": 19,
+    "paragraph_id": [
+      19,
+      5
+    ],
+    "question_text": "Along with the Anglican Church and Uniting Church, what religious denomination operates private schools in Australia?",
+    "gold_answers": [
+      "Presbyterian",
+      "Presbyterian Church",
+      "Presbyterian Church"
+    ]
+  },
+  {
+    "question_id": "5727aeac3acd2414000de988",
+    "article_index": 20,
+    "paragraph_id": [
+      20,
+      1
+    ],
+    "question_text": "How many individual libraries make up the main school library?",
+    "gold_answers": [
+      "79 individual libraries",
+      "79",
+      "79"
+    ]
+  },
+  {
+    "question_id": "5727cebc2ca10214002d96f0",
+    "article_index": 20,
+    "paragraph_id": [
+      20,
+      13
+    ],
+    "question_text": "What is the total number of professors, instructors, and lecturers at Harvard?",
+    "gold_answers": [
+      "2,400",
+      "2,400",
+      "2,400"
+    ]
+  },
+  {
+    "question_id": "572820512ca10214002d9e74",
+    "article_index": 21,
+    "paragraph_id": [
+      21,
+      14
+    ],
+    "question_text": "What is the name of the river that is completely contained inside Jacksonville?",
+    "gold_answers": [
+      "The Trout River",
+      "Trout River",
+      "The Trout River"
+    ]
+  },
+  {
+    "question_id": "5727ec062ca10214002d99b6",
+    "article_index": 22,
+    "paragraph_id": [
+      22,
+      4
+    ],
+    "question_text": "What is controled by the market and economy?",
+    "gold_answers": [
+      "workers wages",
+      "workers wages",
+      "wages"
+    ]
+  },
+  {
+    "question_id": "5729e2b76aef0514001550d2",
+    "article_index": 22,
+    "paragraph_id": [
+      22,
+      10
+    ],
+    "question_text": "What can result in creating a poverty trap?",
+    "gold_answers": [
+      "gender inequality in education",
+      "low economic growth",
+      "continued gender inequality in education"
+    ]
+  },
+  {
+    "question_id": "572a0e0e1d04691400779707",
+    "article_index": 22,
+    "paragraph_id": [
+      22,
+      28
+    ],
+    "question_text": "What is negatively correlated to the duration of economic growth?",
+    "gold_answers": [
+      "inequality in wealth and income",
+      "inequality in wealth and income",
+      "wealth and income"
+    ]
+  },
+  {
+    "question_id": "572a1a5c6aef051400155287",
+    "article_index": 22,
+    "paragraph_id": [
+      22,
+      35
+    ],
+    "question_text": "What was Ban Ki-Moon the Secretary General of?",
+    "gold_answers": [
+      "the United Nations",
+      "United Nations",
+      "United Nations"
+    ]
+  },
+  {
+    "question_id": "572a20816aef0514001552e7",
+    "article_index": 22,
+    "paragraph_id": [
+      22,
+      41
+    ],
+    "question_text": "How were some modern economic inequalities created?",
+    "gold_answers": [
+      "forceful taking of property",
+      "forceful taking of property",
+      "forceful taking of property"
+    ]
+  },
+  {
+    "question_id": "57284d484b864d1900164900",
+    "article_index": 23,
+    "paragraph_id": [
+      23,
+      10
+    ],
+    "question_text": "During what decade did the campus start to look more modern?",
+    "gold_answers": [
+      "the 1940s",
+      "After the 1940s"
+    ]
+  },
+  {
+    "question_id": "57284d484b864d1900164904",
+    "article_index": 23,
+    "paragraph_id": [
+      23,
+      10
+    ],
+    "question_text": "When was the Gerald Ratner Athletics Center constructed?",
+    "gold_answers": [
+      "2003",
+      "2003"
+    ]
+  },
+  {
+    "question_id": "572863363acd2414000df986",
+    "article_index": 23,
+    "paragraph_id": [
+      23,
+      21
+    ],
+    "question_text": "In the fall quarter of 2014, how many students signed up for the university's four graduate divisions?",
+    "gold_answers": [
+      "3,468",
+      "3,468",
+      "3,468"
+    ]
+  },
+  {
+    "question_id": "57286f373acd2414000df9de",
+    "article_index": 24,
+    "paragraph_id": [
+      24,
+      15
+    ],
+    "question_text": "What government department did Buyantu shut down?",
+    "gold_answers": [
+      "the Department of State Affairs",
+      "Department of State Affairs",
+      "the Department of State Affairs"
+    ]
+  },
+  {
+    "question_id": "57286f373acd2414000df9df",
+    "article_index": 24,
+    "paragraph_id": [
+      24,
+      15
+    ],
+    "question_text": "When did Buyantu resume testing potential government employees?",
+    "gold_answers": [
+      "1313",
+      "1313",
+      "1313"
+    ]
+  },
+  {
+    "question_id": "572878942ca10214002da3a5",
+    "article_index": 24,
+    "paragraph_id": [
+      24,
+      22
+    ],
+    "question_text": "What crops were introduced or popularized in the Yuan?",
+    "gold_answers": [
+      "carrots, turnips, new varieties of lemons, eggplants, and melons, high-quality granulated sugar, and cotton",
+      "carrots, turnips, new varieties of lemons, eggplants, and melons, high-quality granulated sugar, and cotton",
+      "carrots, turnips, new varieties of lemons, eggplants, and melons, high-quality granulated sugar, and cotton"
+    ]
+  },
+  {
+    "question_id": "572883a33acd2414000dfa7a",
+    "article_index": 24,
+    "paragraph_id": [
+      24,
+      41
+    ],
+    "question_text": "Who did the Mongols send to Bukhara as administrators?",
+    "gold_answers": [
+      "Han Chinese and Khitans",
+      "Han Chinese and Khitans",
+      "Han Chinese and Khitans"
+    ]
+  },
+  {
+    "question_id": "5728f3724b864d1900165118",
+    "article_index": 25,
+    "paragraph_id": [
+      25,
+      2
+    ],
+    "question_text": "What virus did Walter Reed discover?",
+    "gold_answers": [
+      "yellow fever virus",
+      "yellow fever",
+      "yellow fever virus"
+    ]
+  },
+  {
+    "question_id": "5728fc2eaf94a219006a9eca",
+    "article_index": 25,
+    "paragraph_id": [
+      25,
+      7
+    ],
+    "question_text": "What compounds in the stomach protect against ingested pathogens?",
+    "gold_answers": [
+      "gastric acid and proteases",
+      "gastric acid and proteases",
+      "gastric acid"
+    ]
+  },
+  {
+    "question_id": "572900f73f37b31900477f6d",
+    "article_index": 25,
+    "paragraph_id": [
+      25,
+      9
+    ],
+    "question_text": "What cytokines are responsible for communication between white blood cells?",
+    "gold_answers": [
+      "interleukins",
+      "interleukins",
+      "interleukins"
+    ]
+  },
+  {
+    "question_id": "5729fe5c3f37b31900478630",
+    "article_index": 25,
+    "paragraph_id": [
+      25,
+      28
+    ],
+    "question_text": "In autoimmune disorders, the immune system doesn't distinguish between what types of cells?",
+    "gold_answers": [
+      "self and non-self",
+      "self and non-self",
+      "self and non-self"
+    ]
+  },
+  {
+    "question_id": "572944e03f37b319004781e5",
+    "article_index": 26,
+    "paragraph_id": [
+      26,
+      16
+    ],
+    "question_text": "What problem did some tree ring data have?",
+    "gold_answers": [
+      "divergence",
+      "divergence problem",
+      "divergence"
+    ]
+  },
+  {
+    "question_id": "572949306aef051400154c6b",
+    "article_index": 26,
+    "paragraph_id": [
+      26,
+      18
+    ],
+    "question_text": "When was the Third Assessment Report published?",
+    "gold_answers": [
+      "2001",
+      "2001",
+      "2001"
+    ]
+  },
+  {
+    "question_id": "57297bc9af94a219006aa4c7",
+    "article_index": 27,
+    "paragraph_id": [
+      27,
+      9
+    ],
+    "question_text": "What is the most elemental way to test the primality of any integer n?",
+    "gold_answers": [
+      "trial division",
+      "trial division",
+      "trial division",
+      "trial division",
+      "trial division"
+    ]
+  },
+  {
+    "question_id": "572982e66aef051400154f92",
+    "article_index": 27,
+    "paragraph_id": [
+      27,
+      13
+    ],
+    "question_text": "What is the name of one type of computing method that is used to find prime numbers?",
+    "gold_answers": [
+      "distributed computing",
+      "distributed computing",
+      "distributed",
+      "distributed computing",
+      "distributed computing"
+    ]
+  },
+  {
+    "question_id": "57299021af94a219006aa50f",
+    "article_index": 27,
+    "paragraph_id": [
+      27,
+      18
+    ],
+    "question_text": "Which theorem states that every large even integer can be written as a prime summed with a semiprime?",
+    "gold_answers": [
+      "Chen's theorem",
+      "Chen's",
+      "Chen's theorem",
+      "Chen's theorem"
+    ]
+  },
+  {
+    "question_id": "572fe288a23a5019007fcada",
+    "article_index": 28,
+    "paragraph_id": [
+      28,
+      1
+    ],
+    "question_text": "What is the Rhine called in Dutch?",
+    "gold_answers": [
+      "Rijn",
+      "Rijn",
+      "Rijn",
+      "Rijn",
+      "Rijn"
+    ]
+  },
+  {
+    "question_id": "572ff5fcb2c2fd140056865a",
+    "article_index": 28,
+    "paragraph_id": [
+      28,
+      18
+    ],
+    "question_text": "What is the translation of the old north branch of rhe Rhine?",
+    "gold_answers": [
+      "Bent Rhine",
+      "Bent Rhine",
+      "Bent Rhine"
+    ]
+  },
+  {
+    "question_id": "572ff673b2c2fd140056866b",
+    "article_index": 28,
+    "paragraph_id": [
+      28,
+      19
+    ],
+    "question_text": "What is the nickname for the Delta in the Netherlands?",
+    "gold_answers": [
+      "Rhine Delta",
+      "Rhine Delta",
+      "Rhine Delta"
+    ]
+  },
+  {
+    "question_id": "572ffa79a23a5019007fcbeb",
+    "article_index": 28,
+    "paragraph_id": [
+      28,
+      24
+    ],
+    "question_text": "What period did plates reverse directions to compress the Tethys floor?",
+    "gold_answers": [
+      "Jurassic Period",
+      "Jurassic Period",
+      "Jurassic Period"
+    ]
+  },
+  {
+    "question_id": "57300911947a6a140053cfba",
+    "article_index": 28,
+    "paragraph_id": [
+      28,
+      38
+    ],
+    "question_text": "Who threw gold into the Rhine, according to legend?",
+    "gold_answers": [
+      "Hagen",
+      "Hagen",
+      "Hagen"
+    ]
+  },
+  {
+    "question_id": "572fb42904bcaa1900d76c16",
+    "article_index": 29,
+    "paragraph_id": [
+      29,
+      8
+    ],
+    "question_text": "Who is currently speaker of the Scottish Parliament?",
+    "gold_answers": [
+      "Tricia Marwick",
+      "Tricia Marwick",
+      "Tricia Marwick"
+    ]
+  },
+  {
+    "question_id": "572fc78d04bcaa1900d76d08",
+    "article_index": 29,
+    "paragraph_id": [
+      29,
+      19
+    ],
+    "question_text": "What do the membership of the committees reflect?",
+    "gold_answers": [
+      "balance of parties",
+      "balance of parties across Parliament",
+      "the balance of parties across Parliament"
+    ]
+  },
+  {
+    "question_id": "572fdd03a23a5019007fca9d",
+    "article_index": 29,
+    "paragraph_id": [
+      29,
+      38
+    ],
+    "question_text": "What consequence of establishing the Scottish Parliament applies to Scottish MPs sitting in the UK House of Commons?",
+    "gold_answers": [
+      "able to vote on domestic legislation that applies only to England, Wales and Northern Ireland",
+      "able to vote on domestic legislation that applies only to England, Wales and Northern Ireland",
+      "procedural consequence"
+    ]
+  },
+  {
+    "question_id": "572ffc99947a6a140053cef6",
+    "article_index": 30,
+    "paragraph_id": [
+      30,
+      6
+    ],
+    "question_text": "Who is the President of Egypt?",
+    "gold_answers": [
+      "Anwar Sadat",
+      "Anwar Sadat",
+      "Anwar Sadat"
+    ]
+  },
+  {
+    "question_id": "5730005db2c2fd1400568703",
+    "article_index": 30,
+    "paragraph_id": [
+      30,
+      11
+    ],
+    "question_text": "Who was an important figure in the twentieth-century Islamic revival in India?",
+    "gold_answers": [
+      "Sayyid Abul Ala Maududi",
+      "Sayyid Abul Ala Maududi",
+      "Sayyid Abul Ala Maududi"
+    ]
+  },
+  {
+    "question_id": "57302faa04bcaa1900d77315",
+    "article_index": 30,
+    "paragraph_id": [
+      30,
+      37
+    ],
+    "question_text": "What was Abu Hamaz al-Masri charged with when he was arrested?",
+    "gold_answers": [
+      "incitement to terrorism",
+      "incitement to terrorism",
+      "incitement to terrorism"
+    ]
+  },
+  {
+    "question_id": "573092088ab72b1400f9c598",
+    "article_index": 31,
+    "paragraph_id": [
+      31,
+      12
+    ],
+    "question_text": "Which is older the British Empire or the Ethiopian Empire?",
+    "gold_answers": [
+      "Ethiopian Empire",
+      "the Ethiopian Empire",
+      "Ethiopian",
+      "Ethiopian"
+    ]
+  },
+  {
+    "question_id": "573098f38ab72b1400f9c5d2",
+    "article_index": 31,
+    "paragraph_id": [
+      31,
+      16
+    ],
+    "question_text": "European imperialism was focused on what?",
+    "gold_answers": [
+      "economic growth",
+      "economic growth",
+      "economic growth",
+      "economic growth",
+      "economic growth"
+    ]
+  },
+  {
+    "question_id": "573099ee8ab72b1400f9c5dc",
+    "article_index": 31,
+    "paragraph_id": [
+      31,
+      17
+    ],
+    "question_text": "What advancements besides military technology did Europe achieve?",
+    "gold_answers": [
+      "communication",
+      "communication",
+      "communication",
+      "communication",
+      "communication"
+    ]
+  },
+  {
+    "question_id": "57332562d058e614000b5730",
+    "article_index": 32,
+    "paragraph_id": [
+      32,
+      5
+    ],
+    "question_text": "What city, raided by clans and dukes, preceded the founding of Warszowa?",
+    "gold_answers": [
+      "Jazdów",
+      "Jazdów",
+      "Jazdów"
+    ]
+  },
+  {
+    "question_id": "57332c1e4776f4190066073d",
+    "article_index": 32,
+    "paragraph_id": [
+      32,
+      9
+    ],
+    "question_text": "When did Hitler order the annihilation of the Warsaw Ghetto?",
+    "gold_answers": [
+      "April 1943",
+      "19 April 1943",
+      "19 April 1943"
+    ]
+  },
+  {
+    "question_id": "5733638fd058e614000b59ec",
+    "article_index": 32,
+    "paragraph_id": [
+      32,
+      19
+    ],
+    "question_text": "What were the Saxon Palace and Brühl Palace in prewar Warsaw?",
+    "gold_answers": [
+      "the most distinctive buildings",
+      "the most distinctive buildings",
+      "most distinctive buildings"
+    ]
+  },
+  {
+    "question_id": "5733647e4776f419006609b1",
+    "article_index": 32,
+    "paragraph_id": [
+      32,
+      20
+    ],
+    "question_text": "Who does the statue of Little Insurgent commemorate?",
+    "gold_answers": [
+      "children",
+      "children who served as messengers and frontline troops in the Warsaw Uprising",
+      "children"
+    ]
+  },
+  {
+    "question_id": "5733d13e4776f419006612c5",
+    "article_index": 33,
+    "paragraph_id": [
+      33,
+      2
+    ],
+    "question_text": "How successful was initial effort by Braddock?",
+    "gold_answers": [
+      "disaster; he was defeated in the Battle of the Monongahela",
+      "disaster",
+      "was a disaster",
+      "he was defeated",
+      "None succeeded"
+    ]
+  },
+  {
+    "question_id": "5733d249d058e614000b6331",
+    "article_index": 33,
+    "paragraph_id": [
+      33,
+      3
+    ],
+    "question_text": "Who increased British military resources in colonies?",
+    "gold_answers": [
+      "William Pitt",
+      "William Pitt",
+      "William Pitt",
+      "William Pitt",
+      "William Pitt"
+    ]
+  },
+  {
+    "question_id": "5733f7b9d058e614000b66ab",
+    "article_index": 33,
+    "paragraph_id": [
+      33,
+      27
+    ],
+    "question_text": "Where was Shirey going to be when Fort Oswego was to be attacked?",
+    "gold_answers": [
+      "planned to attack Fort Niagara",
+      "Fort Niagara",
+      "Fort Niagara",
+      "Fort Niagara"
+    ]
+  },
+  {
+    "question_id": "57373d0cc3c5551400e51e87",
+    "article_index": 34,
+    "paragraph_id": [
+      34,
+      2
+    ],
+    "question_text": "How many elements did Aristotle believe the terrestrial sphere to be made up of?",
+    "gold_answers": [
+      "four",
+      "four",
+      "four",
+      "four",
+      "four",
+      "four"
+    ]
+  },
+  {
+    "question_id": "57373f80c3c5551400e51e91",
+    "article_index": 34,
+    "paragraph_id": [
+      34,
+      3
+    ],
+    "question_text": "What did objects in forced motion contain according to the late Medieval idea that influence Aristotle?",
+    "gold_answers": [
+      "impetus",
+      "innate force of impetus",
+      "gravity",
+      "an innate force of impetus",
+      "innate force of impetus",
+      "innate force of impetus"
+    ]
+  },
+  {
+    "question_id": "57376df3c3c5551400e51eda",
+    "article_index": 34,
+    "paragraph_id": [
+      34,
+      14
+    ],
+    "question_text": "What makes static friction go up or down in responce to contact characteristics between an object and the surface it is on?",
+    "gold_answers": [
+      "applied force",
+      "applied force",
+      "applied force",
+      "applied force",
+      "applied force"
+    ]
+  }
+]
