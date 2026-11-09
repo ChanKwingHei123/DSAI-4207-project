@@ -25,7 +25,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_INDEX_DIR = REPO_ROOT / "results" / "index"
 DEFAULT_CANDIDATES_PATH = REPO_ROOT / "data" / "candidates" / "hard_candidates.jsonl"
 DEFAULT_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
-DEFAULT_TOP_K = 30
+DEFAULT_TOP_K = 100
 
 # Diagnostic sanity thresholds (diagnostic only; never tuned on)
 LOW_RECALL_AT_1_THRESHOLD = 0.50
@@ -164,18 +164,20 @@ def run_faiss_search_stage(
             )
 
             gold_rank: int | None = None
+            gold_score: float | None = None
             filtered_pids: list[list[int]] = []
             filtered_scores: list[float] = []
 
             for rank_1idx, (score, pid) in enumerate(ranked_items, start=1):
                 if pid == gold_pid:
                     gold_rank = rank_1idx
+                    gold_score = round(score, 8)
                     continue
                 if len(filtered_pids) < top_k:
                     filtered_pids.append(pid)
                     filtered_scores.append(round(score, 8))
 
-            if gold_rank is None:
+            if gold_rank is None or gold_score is None:
                 raise ValueError(
                     f"Gold paragraph {gold_pid} for question {q_id} not found in paragraph pool."
                 )
@@ -192,6 +194,7 @@ def run_faiss_search_stage(
                 "question_id": q_id,
                 "split": split_name,
                 "gold_paragraph_id": gold_pid,
+                "gold_score": gold_score,
                 "ranked_paragraph_ids": filtered_pids,
                 "scores": filtered_scores,
             }

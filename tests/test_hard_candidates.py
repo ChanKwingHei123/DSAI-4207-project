@@ -182,7 +182,7 @@ def ensured_retrieval_artifacts() -> dict:
 
 @requires_raw_squad
 def test_gold_paragraph_never_in_candidates(ensured_retrieval_artifacts: dict) -> None:
-    """Verify every question has 30 candidates, gold paragraph is excluded, and scores are sorted."""
+    """Verify every question has 100 candidates, gold paragraph is excluded, and scores are sorted."""
     rows = [
         json.loads(line)
         for line in DEFAULT_CANDIDATES_PATH.read_text(encoding="utf-8").splitlines()
@@ -196,15 +196,16 @@ def test_gold_paragraph_never_in_candidates(ensured_retrieval_artifacts: dict) -
         ranked_pids = row["ranked_paragraph_ids"]
         scores = row["scores"]
 
-        assert len(ranked_pids) == 30, f"Question {q_id} does not have 30 candidates"
-        assert len(scores) == 30, f"Question {q_id} does not have 30 scores"
+        assert "gold_score" in row and isinstance(row["gold_score"], float)
+        assert len(ranked_pids) == 100, f"Question {q_id} does not have 100 candidates"
+        assert len(scores) == 100, f"Question {q_id} does not have 100 scores"
         assert (
             gold_pid not in ranked_pids
         ), f"Gold paragraph {gold_pid} leaked into candidates for {q_id}"
 
-        # No duplicate candidate paragraph IDs within a question's top-30
+        # No duplicate candidate paragraph IDs within a question's top-100
         pid_tuples = [tuple(pid) for pid in ranked_pids]
-        assert len(set(pid_tuples)) == 30, f"Duplicate candidate IDs found for {q_id}"
+        assert len(set(pid_tuples)) == 100, f"Duplicate candidate IDs found for {q_id}"
 
         # Scores must be monotonically non-increasing
         for i in range(len(scores) - 1):
@@ -259,7 +260,7 @@ def test_index_manifest_and_diagnostics(ensured_retrieval_artifacts: dict) -> No
     assert manifest["dim"] == 384
     assert manifest["paragraph_count"] == 1204
     assert manifest["question_count"] == 590
-    assert manifest["top_k"] == 30
+    assert manifest["top_k"] == 100
 
     faiss_path = DEFAULT_INDEX_DIR / "paragraphs.faiss"
     assert faiss_path.exists()
