@@ -61,26 +61,31 @@ def check_results_jsonl_rows(results_dir: Path) -> list[str]:
     if not results_dir.exists():
         return errors
 
-    for jsonl_path in sorted(results_dir.glob("*.jsonl")):
+    for jsonl_path in sorted(results_dir.rglob("*.jsonl")):
+        rel_path = jsonl_path.relative_to(results_dir)
         raw_lines = jsonl_path.read_text(encoding="utf-8").splitlines()
         for line_no, raw_line in enumerate(raw_lines, start=1):
             stripped = raw_line.strip()
             if not stripped:
-                errors.append(f"{jsonl_path.name}:{line_no}: empty line in JSONL results file")
+                errors.append(f"{rel_path}:{line_no}: empty line in JSONL results file")
                 continue
             try:
                 record: Any = json.loads(stripped)
             except json.JSONDecodeError as exc:
-                errors.append(f"{jsonl_path.name}:{line_no}: invalid JSON ({exc})")
+                errors.append(f"{rel_path}:{line_no}: invalid JSON ({exc})")
                 continue
             if not isinstance(record, dict):
-                errors.append(f"{jsonl_path.name}:{line_no}: JSONL row must be a JSON object")
+                errors.append(f"{rel_path}:{line_no}: JSONL row must be a JSON object")
                 continue
+            if record.get("is_stub") is True or str(record.get("backend", "")).strip().lower() == "stub":
+                errors.append(
+                    f"{rel_path}:{line_no}: stub output (is_stub=True) is forbidden under results/"
+                )
             for key in REQUIRED_RESULT_HASH_KEYS:
                 val = record.get(key)
                 if not isinstance(val, str) or not val.strip():
                     errors.append(
-                        f"{jsonl_path.name}:{line_no}: missing or empty required field {key!r}"
+                        f"{rel_path}:{line_no}: missing or empty required field {key!r}"
                     )
     return errors
 
