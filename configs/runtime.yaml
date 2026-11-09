@@ -1,0 +1,74 @@
+environment:
+  mlx_version: "0.32.4"
+  mlx_lm_version: "0.32.2"
+  hf_hub_offline: true
+
+models:
+  Qwen3-4B:
+    hf_repo_id: "Qwen/Qwen3-4B"
+    commit_sha: "1cfa9a7208912126459214e8b04321603b3df60c"
+    local_hf_path: "models/hf/Qwen__Qwen3-4B"
+    mlx_path: "models/mlx/qwen3-4b-4bit"
+    quantization:
+      bits: 4
+      group_size: 64
+      mode: "affine"
+      bits_per_weight: 4.500
+    sha256:
+      hf:
+        safetensors:
+          model-00001-of-00003.safetensors: "328a91d3122359d5547f9d79521205bc0a46e1f79a792dfe650e99fc2d651223"
+          model-00002-of-00003.safetensors: "6cd087b316306a68c562436b5492edbcf6e16c6dba3a1308279caa5a58e21ca5"
+          model-00003-of-00003.safetensors: "e4bf436957184f4eeb86a80e9db394503f1f56446b2e6b7edeac5b81470f4ca1"
+        tokenizer.json: "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4"
+      mlx:
+        safetensors:
+          model.safetensors: "365a6fff57490ca4e89e354c3295b7f2f60ac3fcb0a8a3fa06e21b80bb4d19ca"
+        tokenizer.json: "be75606093db2094d7cd20f3c2f385c212750648bd6ea4fb2bf507a6a4c55506"
+
+  Qwen3-8B:
+    hf_repo_id: "Qwen/Qwen3-8B"
+    commit_sha: "b968826d9c46dd6066d109eabc6255188de91218"
+    local_hf_path: "models/hf/Qwen__Qwen3-8B"
+    mlx_path: "models/mlx/qwen3-8b-4bit"
+    quantization:
+      bits: 4
+      group_size: 64
+      mode: "affine"
+      bits_per_weight: 4.501
+    sha256:
+      hf:
+        safetensors:
+          model-00001-of-00005.safetensors: "31d6a825ae35f11fb85b195b4c42c146c051e446433125a215336abdf95cbf5f"
+          model-00002-of-00005.safetensors: "5991236cea6fe21f3d43cab0f0e84448734fbbe0789816202989f2ddc9d18282"
+          model-00003-of-00005.safetensors: "c5185c4794be2d8a9784d5753c9922db38df478ce11f9ed0b415b7304d896836"
+          model-00004-of-00005.safetensors: "b5ee7de71fbf17db3d5704e0c8f2bc7d005ca9e1d7ca2aeb19827b0cfcaa917a"
+          model-00005-of-00005.safetensors: "20c2d6366ab85c90786ccdd829cd2b9e7d30ef3b2ebbb998280e7e4014b542ff"
+        tokenizer.json: "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4"
+      mlx:
+        safetensors:
+          model.safetensors: "a1411b70b4cfb45016fc69228d58716de58413f5e694561eee8a82b20cfbebf5"
+        tokenizer.json: "be75606093db2094d7cd20f3c2f385c212750648bd6ea4fb2bf507a6a4c55506"
+
+  Llama-3.1-8B-Instruct:
+    hf_repo_id: "unsloth/Meta-Llama-3.1-8B-Instruct"
+    commit_sha: "a2856192dd7c25b842431f39c179a6c2c2f627d1"
+    local_hf_path: "models/hf/unsloth__Meta-Llama-3.1-8B-Instruct"
+    mlx_path: "models/mlx/llama31-8b-4bit"
+    quantization:
+      bits: 4
+      group_size: 64
+      mode: "affine"
+      bits_per_weight: 4.500
+    sha256:
+      hf:
+        safetensors:
+          model-00001-of-00004.safetensors: "2b1879f356aed350030bb40eb45ad362c89d9891096f79a3ab323d3ba5607668"
+          model-00002-of-00004.safetensors: "09d433f650646834a83c580877bd60c6d1f88f7755305c12576b5c7058f9af15"
+          model-00003-of-00004.safetensors: "fc1cdddd6bfa91128d6e94ee73d0ce62bfcdb7af29e978ddcab30c66ae9ea7fa"
+          model-00004-of-00004.safetensors: "92ecfe1a2414458b4821ac8c13cf8cb70aed66b5eea8dc5ad9eeb4ff309d6d7b"
+        tokenizer.json: "6b9e4e7fb171f92fd137b777cc2714bf87d11576700a1dcd7a399e7bbe39537b"
+      mlx:
+        safetensors:
+          model.safetensors: "fe36d962309a5c379bc203996f56a6dde228652d0bb3ed78d4bf60dc9ea7da6c"
+        tokenizer.json: "6b9e4e7fb171f92fd137b777cc2714bf87d11576700a1dcd7a399e7bbe39537b"
