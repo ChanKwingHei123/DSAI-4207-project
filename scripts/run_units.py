@@ -30,6 +30,7 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 import src.omp_guard  # noqa: F401, E402
+from src.backends.mlx_backend import MLXBackend, unload_active_mlx_model  # noqa: E402
 from src.harness import (  # noqa: E402
     Backend,
     StubBackend,
@@ -41,15 +42,18 @@ from src.harness import (  # noqa: E402
 )
 
 
-def make_backend(backend_name: str, model_name: str) -> Backend:
+def make_backend(
+    backend_name: str,
+    model_name: str,
+    *,
+    repo_root: Path = REPO_ROOT,
+) -> Backend:
     """Instantiate the requested backend for `model_name`."""
     norm = backend_name.strip().lower()
     if norm == "stub":
         return StubBackend(model_name=model_name)
     if norm == "mlx":
-        raise NotImplementedError(
-            "Real MLX backend belongs to task P4 and is not implemented in P3."
-        )
+        return MLXBackend(model_name=model_name, repo_root=repo_root)
     raise ValueError(f"Unknown backend {backend_name!r}; expected 'stub' or 'mlx'.")
 
 
@@ -144,18 +148,24 @@ def main(argv: Sequence[str] | None = None) -> int:
         else None
     )
 
-    backends_by_model: dict[str, Backend] = {}
+    active_backend: Backend | None = None
     for unit in units:
-        if unit.model not in backends_by_model:
+        if active_backend is None or active_backend.model_name != unit.model:
+            if active_backend is not None and hasattr(active_backend, "unload"):
+                active_backend.unload()
             try:
-                backends_by_model[unit.model] = make_backend(backend_name, unit.model)
+                active_backend = make_backend(
+                    backend_name,
+                    unit.model,
+                    repo_root=repo_root,
+                )
             except Exception as exc:
                 print(f"[ERROR] {exc}", file=sys.stderr)
                 return 2
 
         summary = run_unit(
             unit=unit,
-            backend=backends_by_model[unit.model],
+            backend=active_backend,
             max_questions=args.questions,
             results_dir=resolved_dir,
             dry_run=dry_run,
@@ -168,6 +178,11 @@ def main(argv: Sequence[str] | None = None) -> int:
             f"resumed_skipped={summary['skipped_resume_count']}, "
             f"p2c_skipped={summary['skipped_p2c_count']})"
         )
+
+    if active_backend is not None and hasattr(active_backend, "unload"):
+        active_backend.unload()
+    else:
+        unload_active_mlx_model()
 
     return 0
 
