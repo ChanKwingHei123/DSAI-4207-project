@@ -1,0 +1,20 @@
+first_non_empty_line: true
+strip_leading_labels:
+  - "Answer:"
+  - "A:"
+label_case_insensitive: true
+require_non_empty: true
+max_words: 10
+invalid_starting_phrases_case_insensitive:
+  - "the answer"
+  - "based on"
+  - "according to"
+  - "the context"
+  - "the passage"
+  - "the document"
+  - "i cannot"
+  - "i can't"
+  - "i don't"
+  - "there is no"
+  - "not mentioned"
+  - "sorry"

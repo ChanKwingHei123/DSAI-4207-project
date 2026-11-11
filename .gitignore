@@ -18,6 +18,8 @@ models/
 # Raw data & intermediate index artifacts (never ignore data/frozen/ or results/*.jsonl)
 data/raw/
 results/index/
+scratch/
 !data/frozen/
 !data/frozen/**
 !results/*.jsonl
+!results/**/*.jsonl

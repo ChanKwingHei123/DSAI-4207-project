@@ -15,7 +15,7 @@ Pre-registered H1 (primary model Qwen3-8B): adding 8 hard negatives to gold-only
 
 ## Hard rules
 1. configs/prereg.yaml and data/frozen/ are read-only. Tests assert their hashes. Never edit them.
-2. results/ is append-only. Never delete or rewrite result files. Every row carries config_hash, prereg_hash, manifest_hash.
+2. results/ is append-only. Never delete or rewrite result files. Every row carries config_hash, prereg_hash, manifest_hash. Only official runs write to results/; stubs and dry runs write to scratch/ (git-ignored).
 3. Every reported number must be read from a file in results/. Never invent, estimate or round from memory.
 4. No network use unless the task explicitly says so. Never print or commit secrets, student IDs or emails.
 5. Write tests first or alongside. Run them. Show real output before claiming done.
