@@ -973,7 +973,7 @@ def run_unit(
                     max_new_tokens=max_new_tokens,
                     greedy=greedy,
                 )
-                elapsed = max(1e-9, time.perf_counter() - t0)
+                wall_elapsed = max(1e-9, time.perf_counter() - t0)
                 if len(raw_outputs) != 1:
                     raise RuntimeError(
                         f"Backend.generate expected 1 output, got {len(raw_outputs)}"
@@ -983,8 +983,19 @@ def run_unit(
                     raw_output, extraction_cfg=extraction_cfg
                 )
 
-                approx_tokens = max(1, len(raw_output.split()))
-                tps = float(approx_tokens / elapsed)
+                backend_gen_sec = getattr(backend, "last_generation_seconds", None)
+                elapsed = (
+                    max(1e-9, float(backend_gen_sec))
+                    if isinstance(backend_gen_sec, (int, float)) and backend_gen_sec > 0
+                    else wall_elapsed
+                )
+                backend_gen_toks = getattr(backend, "last_generated_tokens", None)
+                num_tokens = (
+                    max(1, int(backend_gen_toks))
+                    if isinstance(backend_gen_toks, int) and backend_gen_toks > 0
+                    else max(1, len(raw_output.split()))
+                )
+                tps = float(num_tokens / elapsed)
 
                 result_row: dict[str, Any] = {
                     "qid": qid,
@@ -1085,3 +1096,12 @@ def load_result_rows(
                 )
             rows.append(record)
     return rows
+
+
+def __getattr__(name: str) -> Any:
+    if name == "MLXBackend":
+        from src.backends.mlx_backend import MLXBackend
+
+        return MLXBackend
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+
