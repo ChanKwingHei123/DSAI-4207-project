@@ -1,0 +1,90 @@
+[
+  {
+    "question_id": "573098f38ab72b1400f9c5d2",
+    "question": "European imperialism was focused on what?",
+    "adjudicated_flag": 1,
+    "annotator_A_flagged": 1,
+    "annotator_B_flagged": 1,
+    "annotator_A_which_passage": "5",
+    "annotator_B_which_passage": "5",
+    "annotator_A_note": "Passage 5 states European imperialism aimed to gain political power.",
+    "annotator_B_note": "Passage 5 states European powers colonized and annexed to gain political power."
+  },
+  {
+    "question_id": "57108c95b654c5140001f97c",
+    "question": "What is located within this district?",
+    "adjudicated_flag": 1,
+    "annotator_A_flagged": 1,
+    "annotator_B_flagged": 1,
+    "annotator_A_which_passage": "5",
+    "annotator_B_which_passage": "5",
+    "annotator_A_note": "Ambiguous district reference; passage 5 says the historic Tower Theatre is in Tower District.",
+    "annotator_B_note": "Passage 5 states the historic Tower Theatre is in the heart of the Tower District."
+  },
+  {
+    "question_id": "57274971708984140094dbbb",
+    "question": "Along with the Anglican Church and Uniting Church, what religious denomination operates private schools in Australia?",
+    "adjudicated_flag": 1,
+    "annotator_A_flagged": 1,
+    "annotator_B_flagged": 1,
+    "annotator_A_which_passage": "1",
+    "annotator_B_which_passage": "1",
+    "annotator_A_note": "Passage 1 states Roman Catholic, Protestant, Jewish, and Islamic denominations run private schools.",
+    "annotator_B_note": "Passage 1 states the Roman Catholic Church and Jewish and Islamic groups run private schools."
+  },
+  {
+    "question_id": "572982e66aef051400154f92",
+    "question": "What is the name of one type of computing method that is used to find prime numbers?",
+    "adjudicated_flag": 1,
+    "annotator_A_flagged": 1,
+    "annotator_B_flagged": 1,
+    "annotator_A_which_passage": "6",
+    "annotator_B_which_passage": "6",
+    "annotator_A_note": "Passage 6 states the Sieve of Eratosthenes is a method to compute primes.",
+    "annotator_B_note": "Passage 6 names the Sieve of Eratosthenes as a method to compute primes."
+  },
+  {
+    "question_id": "572ffc99947a6a140053cef6",
+    "question": "Who is the President of Egypt?",
+    "adjudicated_flag": 1,
+    "annotator_A_flagged": 1,
+    "annotator_B_flagged": 1,
+    "annotator_A_which_passage": "7",
+    "annotator_B_which_passage": "7",
+    "annotator_A_note": "Passage 7 identifies Gamal Abdul Nasser as Egyptian president.",
+    "annotator_B_note": "Passage 7 identifies Gamal Abdul Nasser as Egyptian president."
+  },
+  {
+    "question_id": "572a1a5c6aef051400155287",
+    "question": "What was Ban Ki-Moon the Secretary General of?",
+    "adjudicated_flag": 1,
+    "annotator_A_flagged": 1,
+    "annotator_B_flagged": 1,
+    "annotator_A_which_passage": "3",
+    "annotator_B_which_passage": "3",
+    "annotator_A_note": "Passage 3 states U.N. Secretary General Ban Ki-moon which is not in gold answers.",
+    "annotator_B_note": "Passage 3 identifies Ban Ki-moon as U.N. Secretary General using the abbreviation U.N."
+  },
+  {
+    "question_id": "572a20816aef0514001552e7",
+    "question": "How were some modern economic inequalities created?",
+    "adjudicated_flag": 1,
+    "annotator_A_flagged": 1,
+    "annotator_B_flagged": 1,
+    "annotator_A_which_passage": "7",
+    "annotator_B_which_passage": "7",
+    "annotator_A_note": "Passage 7 states variation in access to education is a factor creating inequality.",
+    "annotator_B_note": "Passage 7 states inequality is created by variation in individuals' access to education."
+  },
+  {
+    "question_id": "572746addd62a815002e9a61",
+    "question": "What right do private schools have that public schools don't?",
+    "adjudicated_flag": 1,
+    "annotator_A_flagged": 1,
+    "annotator_B_flagged": 1,
+    "annotator_A_which_passage": "7",
+    "annotator_B_which_passage": "7",
+    "annotator_A_note": "Passage 7 states private schools have power of expulsion unlike government schools.",
+    "annotator_B_note": "Passage 7 states private schools have the power of expulsion unlike government schools."
+  }
+]
