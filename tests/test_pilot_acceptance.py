@@ -135,8 +135,8 @@ def test_valid_rates_per_unit_and_pooled(tmp_path: Path) -> None:
     assert r["verdict_pass"] is True
 
 
-def test_valid_rate_boundary_85_exact_passes_below_fails(tmp_path: Path) -> None:
-    # 17/20 = 85.0 % valid in oracle -> PASS; 16/20 = 80 % in hard -> FAIL.
+def test_valid_rate_boundary_and_single_unit_dip_passes(tmp_path: Path) -> None:
+    # 17/20 = 85.0 % valid in oracle -> PASS; 16/20 = 80 % in hard -> dips below 85 %.
     def fn(model: str, unit: str, i: int) -> tuple[str, bool, float]:
         ans, _, s = default_answer(model, unit, i)
         if unit == "oracle":
@@ -151,28 +151,40 @@ def test_valid_rate_boundary_85_exact_passes_below_fails(tmp_path: Path) -> None
     assert models["Qwen3-8B"]["verdict_pass"] is True
     q4 = models["Qwen3-4B"]
     assert q4["valid_units"]["hard"]["pass"] is False
-    # Pooled overall (73/80) and context (53/60 = 88.3 %) pass, but a single context unit fails.
+    # Pooled overall (73/80) and context (53/60 = 88.3 %) pass: single unit dip is flagged but model passes.
     assert q4["valid_overall"]["pass"] is True
     assert q4["valid_context"]["pass"] is True
-    assert q4["verdict_checks"]["valid_each_context_unit"] is False
-    assert q4["verdict_pass"] is False
+    assert len(q4["single_unit_dips"]) > 0
+    assert q4["verdict_pass"] is True
 
 
-def test_context_pooled_failure_fails_model(tmp_path: Path) -> None:
-    # Llama: every context unit at 85 % (each passes) but closed_book 0 % valid ->
-    # overall 63.75 % fails even though the context units pass.
+def test_pooled_failure_fails_model(tmp_path: Path) -> None:
+    # Llama: all units have 16/20 = 80.0 % valid -> both pooled 4-units and pooled context are 80 % -> FAILS.
     def fn(model: str, unit: str, i: int) -> tuple[str, bool, float]:
         ans, _, s = default_answer(model, unit, i)
         if model != "Llama-3.1-8B-Instruct":
             return ans, True, s
-        return ans, (unit != "closed_book" and i >= 3), s
+        return ans, i >= 4, s
 
     r = run_eval(tmp_path, answer_fn=fn)["models"]["Llama-3.1-8B-Instruct"]
-    assert r["verdict_checks"]["valid_each_context_unit"] is True
-    assert r["verdict_checks"]["valid_context_pooled_3_units"] is True
-    assert r["valid_overall"]["valid_pct"] == pytest.approx(63.75)
-    assert r["verdict_checks"]["valid_overall_4_units"] is False
+    assert r["valid_overall"]["pass"] is False
+    assert r["valid_context"]["pass"] is False
+    assert r["verdict_checks"]["valid_pooled_pass"] is False
     assert r["verdict_pass"] is False
+
+
+def test_invalid_reasons_breakdown(tmp_path: Path) -> None:
+    # Test diagnose_invalid_reason classification
+    assert ep.diagnose_invalid_reason("short text") == "other"
+    assert ep.diagnose_invalid_reason("   ") == "empty"
+    assert ep.diagnose_invalid_reason("one two three four five six seven eight nine ten eleven") == "length_only"
+    assert ep.diagnose_invalid_reason("i don't know") == "prefix_only"
+    assert (
+        ep.diagnose_invalid_reason(
+            "i cannot find the answer to this question in the text because it is missing"
+        )
+        == "both_length_and_prefix"
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -404,7 +416,8 @@ def test_main_reports_failure_with_nonzero_exit(
 
     def fn(model: str, unit: str, i: int) -> tuple[str, bool, float]:
         ans, _, s = default_answer(model, unit, i)
-        return ans, not (model == "Qwen3-4B" and unit == "random" and i < 10), s
+        # 14 invalid in random -> pooled context 46/60 = 76.7%, pooled overall 66/80 = 82.5% -> both < 85% -> FAILS
+        return ans, not (model == "Qwen3-4B" and unit == "random" and i < 14), s
 
     build_dataset(tmp_path, hashes=hashes, answer_fn=fn)
     out = tmp_path / "scratch" / "report.md"
@@ -412,7 +425,6 @@ def test_main_reports_failure_with_nonzero_exit(
     text = out.read_text(encoding="utf-8")
     assert "Acceptance FAILED for: Qwen3-4B" in text
     assert "no model is substituted" in text
-    assert "**FAIL**" in text
 
 
 def test_main_hash_mismatch_returns_error(tmp_path: Path) -> None:

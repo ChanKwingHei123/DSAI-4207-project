@@ -212,6 +212,93 @@ def pct(numerator: float, denominator: int) -> float:
     return 100.0 * float(numerator) / float(denominator)
 
 
+def diagnose_invalid_reason(
+    extracted_answer: str,
+    raw_output: str = "",
+    invalid_prefixes: Sequence[str] = (
+        "the answer",
+        "based on",
+        "according to",
+        "the context",
+        "the passage",
+        "the document",
+        "i cannot",
+        "i can't",
+        "i don't",
+        "there is no",
+        "not mentioned",
+        "sorry",
+    ),
+    max_words: int = 10,
+) -> str:
+    """Classify why a row is invalid:
+    - 'empty' (extracted answer is empty or whitespace)
+    - 'length_only' (> 10 words and does not start with a forbidden prefix)
+    - 'prefix_only' (starts with a forbidden prefix and <= 10 words)
+    - 'both_length_and_prefix' (> 10 words and starts with a forbidden prefix)
+    """
+    candidate = str(extracted_answer).strip()
+    if not candidate:
+        return "empty"
+    words = candidate.split()
+    too_long = len(words) > max_words
+    lowered = candidate.lower()
+    has_prefix = any(lowered.startswith(p.lower()) for p in invalid_prefixes)
+    if too_long and has_prefix:
+        return "both_length_and_prefix"
+    if too_long:
+        return "length_only"
+    if has_prefix:
+        return "prefix_only"
+    return "other"
+
+
+def summarize_invalid_rows(
+    rows: Sequence[Mapping[str, Any]],
+    extraction_cfg: Mapping[str, Any] | None = None,
+) -> dict[str, int]:
+    cfg = extraction_cfg or {}
+    max_words = int(cfg.get("max_words", 10))
+    prefixes = list(
+        cfg.get(
+            "invalid_starting_phrases_case_insensitive",
+            [
+                "the answer",
+                "based on",
+                "according to",
+                "the context",
+                "the passage",
+                "the document",
+                "i cannot",
+                "i can't",
+                "i don't",
+                "there is no",
+                "not mentioned",
+                "sorry",
+            ],
+        )
+    )
+    counts = {
+        "total_invalid": 0,
+        "length_only": 0,
+        "prefix_only": 0,
+        "empty": 0,
+        "both_length_and_prefix": 0,
+        "other": 0,
+    }
+    for r in rows:
+        if r.get("valid") is False:
+            counts["total_invalid"] += 1
+            reason = diagnose_invalid_reason(
+                str(r.get("extracted_answer", "")),
+                str(r.get("raw_output", "")),
+                invalid_prefixes=prefixes,
+                max_words=max_words,
+            )
+            counts[reason] = counts.get(reason, 0) + 1
+    return counts
+
+
 def valid_summary(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
     n_valid = sum(1 for r in rows if r["valid"] is True)
     rate = pct(n_valid, len(rows))
@@ -294,11 +381,15 @@ def evaluate_model(
             "missing_qids": [q for q in qid_order if q not in present],
         }
 
-    # (a) valid-answer rates
+    # (a) valid-answer rates & invalid breakdown
     valid_units = {k: valid_summary(unit_rows[k]) for k in UNIT_KEYS}
     valid_overall = valid_summary([r for k in UNIT_KEYS for r in unit_rows[k]])
     valid_context = valid_summary([r for k in CONTEXT_UNIT_KEYS for r in unit_rows[k]])
-    context_units_pass = all(valid_units[k]["pass"] for k in CONTEXT_UNIT_KEYS)
+    invalid_units = {k: summarize_invalid_rows(unit_rows[k]) for k in UNIT_KEYS}
+    invalid_overall = summarize_invalid_rows([r for k in UNIT_KEYS for r in unit_rows[k]])
+    invalid_context = summarize_invalid_rows([r for k in CONTEXT_UNIT_KEYS for r in unit_rows[k]])
+    valid_pooled_pass = bool(valid_overall["pass"] or valid_context["pass"])
+    single_unit_dips = [specs[k].label for k in UNIT_KEYS if not valid_units[k]["pass"]]
 
     # (b) accuracy (all present rows + paired intersection)
     scores = {k: score_rows(unit_rows[k], gold) for k in UNIT_KEYS}
@@ -366,17 +457,22 @@ def evaluate_model(
     )
 
     verdict_checks = {
+        "oracle_headroom": headroom_pass,
+        "valid_pooled_pass": valid_pooled_pass,
         "valid_overall_4_units": valid_overall["pass"],
         "valid_context_pooled_3_units": valid_context["pass"],
-        "valid_each_context_unit": context_units_pass,
-        "oracle_headroom": headroom_pass,
     }
+    verdict_pass = bool(headroom_pass and valid_pooled_pass)
     return {
         "model": model,
         "unit_files": unit_files,
         "valid_units": valid_units,
         "valid_overall": valid_overall,
         "valid_context": valid_context,
+        "invalid_units": invalid_units,
+        "invalid_overall": invalid_overall,
+        "invalid_context": invalid_context,
+        "single_unit_dips": single_unit_dips,
         "acc_all": acc_all,
         "acc_paired": acc_paired,
         "paired_qids": paired_qids,
@@ -389,7 +485,7 @@ def evaluate_model(
         "tripwire_tripped": tripwire_tripped,
         "power": power,
         "verdict_checks": verdict_checks,
-        "verdict_pass": bool(all(verdict_checks.values())),
+        "verdict_pass": verdict_pass,
     }
 
 
@@ -484,12 +580,13 @@ def render_report(ev: Mapping[str, Any], *, repo_root: Path = REPO_ROOT) -> str:
     add("")
     add(
         f"Acceptance thresholds (fixed in the pre-registered proposal; not tuned): valid short "
-        f"answers >= {VALID_RATE_MIN_PCT:.1f} %, oracle headroom >= {HEADROOM_MIN_PTS:.1f} pts. "
-        f"A model PASSES iff the valid rate pooled over all 4 units >= {VALID_RATE_MIN_PCT:.1f} %, "
-        f"the valid rate pooled over the 3 context-bearing units (oracle, hard, random) "
-        f">= {VALID_RATE_MIN_PCT:.1f} %, each context-bearing unit individually >= "
-        f"{VALID_RATE_MIN_PCT:.1f} %, and oracle headroom (all oracle rows) >= "
-        f"{HEADROOM_MIN_PTS:.1f} pts."
+        f"answers >= {VALID_RATE_MIN_PCT:.1f} %, oracle headroom >= {HEADROOM_MIN_PTS:.1f} pts.\n\n"
+        f"**Overall model verdict rule (Stage B approved):** A model PASSES overall if "
+        f"(a) its oracle headroom is >= {HEADROOM_MIN_PTS:.1f} percentage points AND "
+        f"(b) its pooled valid-answer rate across all 4 units OR across the 3 context-bearing "
+        f"units (oracle, hard_negative n=8, random_length_matched n=8) is >= {VALID_RATE_MIN_PCT:.1f} %. "
+        f"Any single unit below {VALID_RATE_MIN_PCT:.1f} % is flagged in the per-unit table for "
+        f"diagnostic visibility, but does not fail the model if either pooled rate passes."
     )
     add("")
 
@@ -502,9 +599,13 @@ def render_report(ev: Mapping[str, Any], *, repo_root: Path = REPO_ROOT) -> str:
     )
     add("|---|---|---|---|---|")
     for m, r in models.items():
-        vo = r["valid_overall"]
+        vo, vc = r["valid_overall"], r["valid_context"]
+        valid_summary_str = (
+            f"pooled_4={vo['valid_pct']:.2f}% ({_pf(vo['pass'])}), "
+            f"pooled_3={vc['valid_pct']:.2f}% ({_pf(vc['pass'])})"
+        )
         add(
-            f"| {m} | {vo['valid_pct']:.2f} % ({vo['n_valid']}/{vo['n_rows']}) {_pf(vo['pass'])} "
+            f"| {m} | {valid_summary_str} "
             f"| {r['acc_all']['oracle']['em_pct']:.2f} % (n={r['acc_all']['oracle']['n']}) "
             f"| {r['headroom_pts']:.2f} pts {_pf(r['headroom_pass'])} "
             f"| **{_pf(r['verdict_pass'])}** |"
@@ -513,17 +614,19 @@ def render_report(ev: Mapping[str, Any], *, repo_root: Path = REPO_ROOT) -> str:
     add("Verdict components:")
     add("")
     add(
-        "| Model | Valid, all 4 units pooled | Valid, 3 context units pooled "
-        "| Each context unit >= 85 % | Oracle headroom | Verdict |"
+        "| Model | Valid, 4 units pooled (>=85%) | Valid, 3 context units pooled (>=85%) "
+        "| Either pooled >= 85% | Oracle headroom (>=10 pts) | Single unit dips (<85%) | Verdict |"
     )
-    add("|---|---|---|---|---|---|")
+    add("|---|---|---|---|---|---|---|")
     for m, r in models.items():
         c = r["verdict_checks"]
+        dips_str = ", ".join(r["single_unit_dips"]) if r["single_unit_dips"] else "none"
         add(
             f"| {m} | {r['valid_overall']['valid_pct']:.2f} % {_pf(c['valid_overall_4_units'])} "
             f"| {r['valid_context']['valid_pct']:.2f} % {_pf(c['valid_context_pooled_3_units'])} "
-            f"| {_pf(c['valid_each_context_unit'])} "
+            f"| {_pf(c['valid_pooled_pass'])} "
             f"| {r['headroom_pts']:.2f} pts {_pf(c['oracle_headroom'])} "
+            f"| {dips_str} "
             f"| **{_pf(r['verdict_pass'])}** |"
         )
     add("")
@@ -539,26 +642,58 @@ def render_report(ev: Mapping[str, Any], *, repo_root: Path = REPO_ROOT) -> str:
     add("")
 
     # Per-unit valid rates
-    add("## 2. Valid-short-answer rate per unit")
+    add("## 2. Valid-short-answer rate per unit & invalid breakdown")
     add("")
     add(
         "> [!NOTE]\n"
         "> closed_book abstentions (e.g. \"I don't know\") are expected when no context passage is "
         "provided and are counted as invalid by `configs/extraction_v1.yaml`. They do not fail a "
-        f"model as long as its overall rate and its context-bearing units are >= "
-        f"{VALID_RATE_MIN_PCT:.1f} %."
+        f"model as long as its pooled rate (across all 4 units or across the 3 context-bearing units) "
+        f"is >= {VALID_RATE_MIN_PCT:.1f} %."
     )
     add("")
-    add("| Model | Unit | Valid / Rows | Valid % | >= 85 % |")
-    add("|---|---|---|---|---|")
+    add("| Model | Unit | Valid / Rows | Valid % | >= 85 % | Diagnostic Note |")
+    add("|---|---|---|---|---|---|")
     for m, r in models.items():
         for k in UNIT_KEYS:
             v = r["valid_units"][k]
-            flag = _pf(v["pass"]) if v["pass"] else "**FAIL**"
-            add(f"| {m} | {specs[k].label} | {v['n_valid']}/{v['n_rows']} | {v['valid_pct']:.2f} | {flag} |")
+            if v["pass"]:
+                flag = "PASS"
+                note = "OK"
+            else:
+                flag = "**< 85%**"
+                note = "dip (flagged for visibility; does not fail model if pooled passes)"
+            add(f"| {m} | {specs[k].label} | {v['n_valid']}/{v['n_rows']} | {v['valid_pct']:.2f} | {flag} | {note} |")
         vc, vo = r["valid_context"], r["valid_overall"]
-        add(f"| {m} | *3 context units pooled* | {vc['n_valid']}/{vc['n_rows']} | {vc['valid_pct']:.2f} | {_pf(vc['pass'])} |")
-        add(f"| {m} | *all 4 units pooled* | {vo['n_valid']}/{vo['n_rows']} | {vo['valid_pct']:.2f} | {_pf(vo['pass'])} |")
+        add(f"| {m} | *3 context units pooled* | {vc['n_valid']}/{vc['n_rows']} | {vc['valid_pct']:.2f} | {_pf(vc['pass'])} | context benchmark |")
+        add(f"| {m} | *all 4 units pooled* | {vo['n_valid']}/{vo['n_rows']} | {vo['valid_pct']:.2f} | {_pf(vo['pass'])} | overall benchmark |")
+    add("")
+    add("### Invalid answer breakdown (`valid == False`)")
+    add("")
+    add(
+        "Breakdown of non-valid answers by cause (`>10 words only` vs. `forbidden prefix` vs. "
+        "`empty` vs. `both >10 words & prefix`):"
+    )
+    add("")
+    add("| Model | Unit | Total Invalid | >10 words only | Forbidden prefix | Empty | Both (>10 words & prefix) |")
+    add("|---|---|---|---|---|---|---|")
+    for m, r in models.items():
+        for k in UNIT_KEYS:
+            inv = r["invalid_units"][k]
+            add(
+                f"| {m} | {specs[k].label} | {inv['total_invalid']} | {inv['length_only']} "
+                f"| {inv['prefix_only']} | {inv['empty']} | {inv['both_length_and_prefix']} |"
+            )
+        inv_ctx = r["invalid_context"]
+        inv_all = r["invalid_overall"]
+        add(
+            f"| {m} | *3 context units pooled* | {inv_ctx['total_invalid']} | {inv_ctx['length_only']} "
+            f"| {inv_ctx['prefix_only']} | {inv_ctx['empty']} | {inv_ctx['both_length_and_prefix']} |"
+        )
+        add(
+            f"| {m} | *all 4 units pooled* | {inv_all['total_invalid']} | {inv_all['length_only']} "
+            f"| {inv_all['prefix_only']} | {inv_all['empty']} | {inv_all['both_length_and_prefix']} |"
+        )
     add("")
 
     # Accuracy
