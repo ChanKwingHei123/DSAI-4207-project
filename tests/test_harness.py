@@ -667,3 +667,86 @@ def test_check_invariants_and_loader_reject_is_stub_under_results(sandbox_repo: 
     # 2. Analysis loader must also reject the stub row under results/
     with pytest.raises(ValueError, match="stub row \\(is_stub=True\\) is forbidden"):
         load_result_rows(sandbox_repo / "results", repo_root=sandbox_repo)
+
+
+def test_frozen_main_inputs_and_pilot_manifest_hash_separation(sandbox_repo: Path) -> None:
+    """When data/frozen/manifest.json exists, main uses data/frozen/ while pilot uses data/sampling/."""
+    frozen_dir = sandbox_repo / "data" / "frozen"
+    frozen_dir.mkdir(parents=True, exist_ok=True)
+
+    frozen_qids = ["frozen_q1", "frozen_q2", "frozen_q3"]
+    (frozen_dir / "main.json").write_text(
+        json.dumps([{"question_id": qid} for qid in frozen_qids]),
+        encoding="utf-8",
+    )
+    for seed in (0, 1, 2):
+        rows = [_make_synthetic_input_row(qid, split="main", seed=seed) for qid in frozen_qids]
+        (frozen_dir / f"main_seed{seed}.jsonl").write_text(
+            "".join(json.dumps(r) + "\n" for r in rows),
+            encoding="utf-8",
+        )
+
+    frozen_manifest = frozen_dir / "manifest.json"
+    frozen_manifest.write_text(
+        json.dumps({"final_n": 3, "question_ids": frozen_qids}),
+        encoding="utf-8",
+    )
+    frozen_hash = sha256_bytes(frozen_manifest.read_bytes())
+    (frozen_dir / "manifest.sha256").write_text(
+        f"{frozen_hash}  data/frozen/manifest.json\n",
+        encoding="utf-8",
+    )
+    sampling_hash = sha256_bytes((sandbox_repo / "data" / "sampling" / "manifest.json").read_bytes())
+    assert frozen_hash != sampling_hash
+
+    official_backend = FakeOfficialBackend("Qwen3-8B")
+
+    # 1. Seed-dependent main unit reads from data/frozen/ and logs frozen manifest_hash
+    main_rag = parse_run_unit("Qwen3-8B__rag__hard_negative__n2__seed0__main")
+    res_main_rag = run_unit(main_rag, official_backend, repo_root=sandbox_repo)
+    assert res_main_rag["written_count"] == 3
+    assert res_main_rag["skipped_p2c_count"] == 0
+    main_rag_rows = [
+        json.loads(line)
+        for line in res_main_rag["output_path"].read_text(encoding="utf-8").splitlines()
+    ]
+    assert [r["qid"] for r in main_rag_rows] == frozen_qids
+    assert all(r["manifest_hash"] == frozen_hash for r in main_rag_rows)
+
+    # 2. Seed-independent main unit reads from data/frozen/ and logs frozen manifest_hash
+    main_oracle = parse_run_unit("Qwen3-8B__oracle__none__n0__seednone__main")
+    res_main_oracle = run_unit(main_oracle, official_backend, repo_root=sandbox_repo)
+    main_oracle_rows = [
+        json.loads(line)
+        for line in res_main_oracle["output_path"].read_text(encoding="utf-8").splitlines()
+    ]
+    assert [r["qid"] for r in main_oracle_rows] == frozen_qids
+    assert all(r["manifest_hash"] == frozen_hash for r in main_oracle_rows)
+
+    # 3. Pilot unit continues reading from data/sampling/ + data/inputs/ and logs sampling manifest_hash
+    pilot_oracle = parse_run_unit("Qwen3-8B__oracle__none__n0__seednone__pilot")
+    res_pilot = run_unit(pilot_oracle, official_backend, repo_root=sandbox_repo)
+    pilot_rows = [
+        json.loads(line)
+        for line in res_pilot["output_path"].read_text(encoding="utf-8").splitlines()
+    ]
+    assert [r["qid"] for r in pilot_rows] == ["pilot_q1", "pilot_q2", "pilot_q3", "pilot_q4"]
+    assert all(r["manifest_hash"] == sampling_hash for r in pilot_rows)
+
+    # 4. Invariants check passes with both pilot (sampling hash) and main (frozen hash) rows
+    assert check_invariants(repo_root=sandbox_repo, run_env_check=False) == []
+
+    # 5. Explicit inputs_dir overrides data/frozen/ for custom fixtures
+    stub = StubBackend("Qwen3-8B")
+    res_custom = run_unit(
+        main_rag,
+        stub,
+        inputs_dir=sandbox_repo / "data" / "inputs",
+        repo_root=sandbox_repo,
+    )
+    custom_rows = [
+        json.loads(line)
+        for line in res_custom["output_path"].read_text(encoding="utf-8").splitlines()
+    ]
+    assert [r["qid"] for r in custom_rows] == ["main_q1", "main_q2", "main_q3"]
+
