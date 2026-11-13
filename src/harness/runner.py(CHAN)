@@ -1,0 +1,86 @@
+import json
+import os
+import uuid
+from datetime import datetime, timezone
+from typing import Callable, Optional
+
+
+class ProductionRAGRunner:
+    """Resumable line-by-line JSONL evaluation harness (Tasks T5.2, T5.3)."""
+
+    def __init__(self, master_prompts_path: str, output_logs_path: str):
+        self.master_prompts_path = master_prompts_path
+        self.output_logs_path = output_logs_path
+        self.completed_log_ids = self._recover_progress()
+
+    def _recover_progress(self) -> set:
+        completed = set()
+        if os.path.exists(self.output_logs_path):
+            with open(self.output_logs_path, "r", encoding="utf-8") as f:
+                for line in f:
+                    if not line.strip():
+                        continue
+                    try:
+                        record = json.loads(line)
+                        completed.add(record["log_id"])
+                    except json.JSONDecodeError:
+                        continue
+            print(f"Recovered {len(completed):,} completed records from {self.output_logs_path}")
+        return completed
+
+    def execute_grid_sweep(
+        self,
+        llm_callable: Optional[Callable[[str], str]] = None,
+        model_name: str = "smoke-mock",
+        limit: Optional[int] = None,
+    ) -> int:
+        if not os.path.exists(self.master_prompts_path):
+            raise FileNotFoundError(f"Missing prompt ledger: {self.master_prompts_path}")
+
+        os.makedirs(os.path.dirname(self.output_logs_path) or ".", exist_ok=True)
+        new_count = 0
+
+        with open(self.master_prompts_path, "r", encoding="utf-8") as f_in:
+            for line in f_in:
+                if not line.strip():
+                    continue
+                if limit is not None and new_count >= limit:
+                    break
+
+                record = json.loads(line)
+                unique_key = f"{model_name}_{record['question_id']}_{record['condition']}_{record['seed']}"
+                log_id = str(uuid.uuid5(uuid.NAMESPACE_DNS, unique_key))
+
+                if log_id in self.completed_log_ids:
+                    continue
+
+                if llm_callable is None:
+                    response_payload = f"Mocked extraction match for true answer: {record['gold_answer'][:25]}..."
+                else:
+                    response_payload = llm_callable(record["rendered_prompt"])
+
+                output_payload = {
+                    "log_id": log_id,
+                    "timestamp_utc": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+                    "model": model_name,
+                    "question_id": record["question_id"],
+                    "condition": record["condition"],
+                    "seed": record["seed"],
+                    "gold_position_index": record["gold_position_index"],
+                    "model_output": response_payload,
+                    "ground_truth": record["gold_answer"],
+                }
+
+                with open(self.output_logs_path, "a", encoding="utf-8") as f_out:
+                    f_out.write(json.dumps(output_payload, ensure_ascii=False) + "\n")
+
+                self.completed_log_ids.add(log_id)
+                new_count += 1
+
+        print(f"Sweep complete: {new_count:,} new generations logged to {self.output_logs_path}")
+        return new_count
+
+
+if __name__ == "__main__":
+    runner = ProductionRAGRunner("data/pilot_prompts_unfrozen.jsonl", "results/smoke_test.jsonl")
+    runner.execute_grid_sweep(limit=20)
