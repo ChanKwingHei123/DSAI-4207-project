@@ -1,0 +1,78 @@
+import json
+import os
+import re
+import faiss
+import numpy as np
+import pandas as pd
+from sentence_transformers import SentenceTransformer
+
+FAISS_PATH = "data/index/squad_dev.faiss"
+PARAGRAPHS_PATH = "data/index/squad_dev_paragraphs.jsonl"
+PILOT_PATH = "data/pilot_50.jsonl"
+MAIN_PATH = "data/main_500.jsonl"
+OUT_PATH = "data/candidates_hard.jsonl"
+TOP_K = 16
+
+
+def normalize_paragraph(text: str) -> str:
+    return re.sub(r"\s+", " ", str(text or "")).strip()
+
+
+def load_jsonl(path: str) -> list:
+    with open(path, "r", encoding="utf-8") as f:
+        return [json.loads(line) for line in f if line.strip()]
+
+
+def main():
+    corpus_df = pd.read_json(PARAGRAPHS_PATH, lines=True)
+    text_to_doc_id = {normalize_paragraph(r["text"]): r["doc_id"] for _, r in corpus_df.iterrows()}
+    faiss_index = faiss.read_index(FAISS_PATH)
+    embed_model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
+
+    all_items = (
+        [("pilot", rec) for rec in load_jsonl(PILOT_PATH)] +
+        [("main", rec) for rec in load_jsonl(MAIN_PATH)]
+    )
+
+    queries = [rec["question_text"] for _, rec in all_items]
+    q_embs = embed_model.encode(queries, convert_to_numpy=True, batch_size=64).astype("float32")
+    q_embs = np.ascontiguousarray(q_embs)
+    faiss.normalize_L2(q_embs)
+
+    scores, indices = faiss_index.search(q_embs, TOP_K + 10)
+
+    os.makedirs(os.path.dirname(OUT_PATH), exist_ok=True)
+    with open(OUT_PATH, "w", encoding="utf-8") as out:
+        for idx_q, (split, rec) in enumerate(all_items):
+            gold_norm = normalize_paragraph(rec["gold_context"])
+            gold_doc_id = text_to_doc_id[gold_norm]
+
+            hard_negatives = []
+            for score, p_idx in zip(scores[idx_q], indices[idx_q]):
+                if p_idx < 0:
+                    continue
+                row = corpus_df.iloc[int(p_idx)]
+                if row["doc_id"] == gold_doc_id:
+                    continue
+                hard_negatives.append({
+                    "doc_id": row["doc_id"],
+                    "text": row["text"],
+                    "score": float(score),
+                })
+                if len(hard_negatives) == TOP_K:
+                    break
+
+            assert len(hard_negatives) == TOP_K, f"Insufficient hard negatives for {rec['question_id']}"
+            out.write(json.dumps({
+                "split": split,
+                "question_id": str(rec["question_id"]),
+                "question": rec["question_text"],
+                "gold_doc_id": gold_doc_id,
+                "hard_negatives": hard_negatives,
+            }, ensure_ascii=False) + "\n")
+
+    print(f"Saved top-{TOP_K} hard negatives for {len(all_items)} questions to {OUT_PATH}")
+
+
+if __name__ == "__main__":
+    main()
