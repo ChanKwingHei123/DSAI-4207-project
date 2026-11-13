@@ -376,7 +376,7 @@ def test_decision_table_all_four_classes_triggered_by_constructed_cases() -> Non
     out_i = evaluate_h1(oracle, hard_i, rand_i, n_resamples=2000, seed=4207)
     assert out_i["h1_met"] is True
     assert out_i["decision_class"] == "(i)"
-    assert out_i["matched_classes"] == {"(i)": True, "(ii)": False, "(iii)": False, "(iv)": False}
+    assert out_i["matched_classes"] == {"(i)": True, "(ii)": False, "(iii)": False, "(iv)": False, "(v)": False}
 
     # Class (ii): Both drops >= 5 pts (hard_drop = 7 pts, random_drop = 6.8 pts) and gap CI includes 0 (gap = 0.2 pts)
     hard_ii = oracle - (0.07 + jitter)
@@ -384,7 +384,7 @@ def test_decision_table_all_four_classes_triggered_by_constructed_cases() -> Non
     out_ii = evaluate_h1(oracle, hard_ii, rand_ii, n_resamples=2000, seed=4207)
     assert out_ii["h1_met"] is False
     assert out_ii["decision_class"] == "(ii)"
-    assert out_ii["matched_classes"] == {"(i)": False, "(ii)": True, "(iii)": False, "(iv)": False}
+    assert out_ii["matched_classes"] == {"(i)": False, "(ii)": True, "(iii)": False, "(iv)": False, "(v)": False}
 
     # Class (iii): Hard drop < 2 pts or its CI includes 0 (hard_drop = 1.0 pt, random_drop = 0.5 pts)
     hard_iii = oracle - (0.01 + jitter)
@@ -392,7 +392,7 @@ def test_decision_table_all_four_classes_triggered_by_constructed_cases() -> Non
     out_iii = evaluate_h1(oracle, hard_iii, rand_iii, n_resamples=2000, seed=4207)
     assert out_iii["h1_met"] is False
     assert out_iii["decision_class"] == "(iii)"
-    assert out_iii["matched_classes"] == {"(i)": False, "(ii)": False, "(iii)": True, "(iv)": False}
+    assert out_iii["matched_classes"] == {"(i)": False, "(ii)": False, "(iii)": True, "(iv)": False, "(v)": False}
 
     # Class (iv): Random-drop CI entirely below 0 (random passages raise accuracy by 5 pts; hard_drop = 3 pts)
     hard_iv = oracle - (0.03 + jitter * 0.2)
@@ -400,7 +400,7 @@ def test_decision_table_all_four_classes_triggered_by_constructed_cases() -> Non
     out_iv = evaluate_h1(oracle, hard_iv, rand_iv, n_resamples=2000, seed=4207)
     assert out_iv["h1_met"] is False
     assert out_iv["decision_class"] == "(iv)"
-    assert out_iv["matched_classes"] == {"(i)": False, "(ii)": False, "(iii)": False, "(iv)": True}
+    assert out_iv["matched_classes"] == {"(i)": False, "(ii)": False, "(iii)": False, "(iv)": True, "(v)": False}
 
 
 # ---------------------------------------------------------------------------
