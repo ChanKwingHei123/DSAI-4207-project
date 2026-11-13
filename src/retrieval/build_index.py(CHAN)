@@ -1,0 +1,77 @@
+import json
+import os
+import random
+import re
+import faiss
+import numpy as np
+import pandas as pd
+import torch
+from sentence_transformers import SentenceTransformer
+
+random.seed(42)
+np.random.seed(42)
+torch.manual_seed(42)
+
+RAW_JSON_PATH = "data/raw/squad_v2_dev.json"
+INDEX_DIR = "data/index"
+FAISS_OUT_PATH = os.path.join(INDEX_DIR, "squad_dev.faiss")
+PARAGRAPHS_OUT_PATH = os.path.join(INDEX_DIR, "squad_dev_paragraphs.jsonl")
+EMBEDDING_DIM = 384
+
+
+def normalize_paragraph(text: str) -> str:
+    return re.sub(r"\s+", " ", str(text or "")).strip()
+
+
+def main():
+    if not os.path.exists(RAW_JSON_PATH):
+        raise FileNotFoundError(f"Missing raw SQuAD JSON at {RAW_JSON_PATH}. Run scripts/generate_splits.py first.")
+
+    os.makedirs(INDEX_DIR, exist_ok=True)
+    with open(RAW_JSON_PATH, "r", encoding="utf-8") as f:
+        squad_data = json.load(f)
+
+    paragraphs = []
+    text_to_doc_id = {}
+
+    for article_idx, article in enumerate(squad_data["data"]):
+        for paragraph_idx, paragraph in enumerate(article.get("paragraphs", [])):
+            text = normalize_paragraph(paragraph.get("context", ""))
+            if not text or text in text_to_doc_id:
+                continue
+
+            doc_id = f"squad_dev_para_{len(paragraphs):06d}"
+            text_to_doc_id[text] = doc_id
+            paragraphs.append({
+                "doc_id": doc_id,
+                "text": text,
+                "title": article.get("title", ""),
+                "source_article_idx": article_idx,
+                "source_paragraph_idx": paragraph_idx,
+                "token_len": len(text.split()),
+            })
+
+    corpus_df = pd.DataFrame(paragraphs)
+    print(f"Encoding {len(corpus_df):,} unique SQuAD paragraphs...")
+
+    embed_model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
+    embeddings = embed_model.encode(
+        corpus_df["text"].tolist(),
+        convert_to_numpy=True,
+        show_progress_bar=True,
+        batch_size=128,
+    ).astype("float32")
+
+    embeddings = np.ascontiguousarray(embeddings)
+    faiss.normalize_L2(embeddings)
+
+    index = faiss.IndexFlatIP(EMBEDDING_DIM)
+    index.add(embeddings)
+
+    faiss.write_index(index, FAISS_OUT_PATH)
+    corpus_df.to_json(PARAGRAPHS_OUT_PATH, orient="records", lines=True, force_ascii=False)
+    print(f"Saved FAISS index ({index.ntotal:,} vectors) to {FAISS_OUT_PATH}")
+
+
+if __name__ == "__main__":
+    main()
