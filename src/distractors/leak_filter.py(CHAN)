@@ -1,0 +1,197 @@
+import hashlib
+import json
+import os
+import random
+import re
+import string
+import faiss
+import numpy as np
+import pandas as pd
+from sentence_transformers import SentenceTransformer
+
+FAISS_PATH = "data/index/squad_dev.faiss"
+PARAGRAPHS_PATH = "data/index/squad_dev_paragraphs.jsonl"
+PILOT_PATH = "data/pilot_50.jsonl"
+MAIN_PATH = "data/main_500.jsonl"
+
+SEEDS = [42, 1337, 2026]
+DOSAGE_CONDITIONS = [
+    {"name": "hard_n=1", "dose": 1, "type": "hard"},
+    {"name": "hard_n=2", "dose": 2, "type": "hard"},
+    {"name": "hard_n=4", "dose": 4, "type": "hard"},
+    {"name": "hard_n=8", "dose": 8, "type": "hard"},
+    {"name": "random_n=1", "dose": 1, "type": "random"},
+    {"name": "random_n=2", "dose": 2, "type": "random"},
+    {"name": "random_n=4", "dose": 4, "type": "random"},
+    {"name": "random_n=8", "dose": 8, "type": "random"},
+]
+
+
+def normalize_paragraph(text: str) -> str:
+    return re.sub(r"\s+", " ", str(text or "")).strip()
+
+
+def normalize_for_leak_check(text: str) -> str:
+    text = str(text or "").lower()
+    text = re.sub(r"\b(a|an|the)\b", " ", text)
+    text = "".join(ch for ch in text if ch not in set(string.punctuation))
+    return " ".join(text.split())
+
+
+def compile_prompt_matrix(split_path: str, corpus_df: pd.DataFrame, faiss_index, embed_model, output_path: str, top_k: int = 16) -> int:
+    with open(split_path, "r", encoding="utf-8") as f:
+        questions_pool = [json.loads(line) for line in f if line.strip()]
+
+    corpus_texts = corpus_df["text"].astype(str).tolist()
+    corpus_doc_ids = corpus_df["doc_id"].astype(str).tolist()
+    corpus_article_ids = corpus_df["source_article_idx"].tolist()
+    corpus_token_lengths = [len(text.split()) for text in corpus_texts]
+    corpus_normalized_texts = [normalize_for_leak_check(text) for text in corpus_texts]
+
+    text_to_doc_id = {normalize_paragraph(t): d for t, d in zip(corpus_texts, corpus_doc_ids)}
+    doc_id_to_index = {d: idx for idx, d in enumerate(corpus_doc_ids)}
+
+    master_prompt_ledger = []
+
+    for item in questions_pool:
+        question_id = str(item["question_id"])
+        query = str(item["question_text"])
+        gold_answer = str(item["gold_answer"])
+        gold_passage = normalize_paragraph(item["gold_context"])
+
+        gold_doc_id = text_to_doc_id[gold_passage]
+        gold_corpus_idx = doc_id_to_index[gold_doc_id]
+        gold_article_idx = corpus_article_ids[gold_corpus_idx]
+        normalized_answer = normalize_for_leak_check(gold_answer)
+
+        # 1. Leak-filtered top-k hard negatives
+        query_emb = embed_model.encode([query], convert_to_numpy=True).astype("float32")
+        query_emb = np.ascontiguousarray(query_emb)
+        faiss.normalize_L2(query_emb)
+        scores, indices = faiss_index.search(query_emb, faiss_index.ntotal)
+
+        hard_negatives = []
+        seen_hard_ids = set()
+        for score, idx in zip(scores[0], indices[0]):
+            if idx < 0:
+                continue
+            c_idx = int(idx)
+            doc_id = corpus_doc_ids[c_idx]
+            if doc_id == gold_doc_id or doc_id in seen_hard_ids:
+                continue
+            if normalized_answer and normalized_answer in corpus_normalized_texts[c_idx]:
+                continue
+            seen_hard_ids.add(doc_id)
+            hard_negatives.append({"doc_id": doc_id, "text": corpus_texts[c_idx], "score": float(score)})
+            if len(hard_negatives) == top_k:
+                break
+
+        assert len(hard_negatives) == top_k, f"Question {question_id} has < {top_k} leak-free hard negatives"
+
+        # 2. Rank-by-rank ±20% length-matched cross-article random pool (Task T3.1)
+        eligible_indices = [
+            c_idx for c_idx, d_id in enumerate(corpus_doc_ids)
+            if d_id != gold_doc_id
+            and corpus_article_ids[c_idx] != gold_article_idx
+            and not (normalized_answer and normalized_answer in corpus_normalized_texts[c_idx])
+        ]
+
+        stable_seed = int(hashlib.sha256(question_id.encode("utf-8")).hexdigest()[:8], 16)
+        random.Random(stable_seed).shuffle(eligible_indices)
+
+        random_pool = []
+        random_tolerances = []
+        used_random_ids = set()
+
+        for rank_idx in range(8):
+            target_len = len(hard_negatives[rank_idx]["text"].split())
+            chosen_idx = None
+            chosen_tol = None
+
+            for tol in (0.20, 0.35):
+                low, high = target_len * (1 - tol), target_len * (1 + tol)
+                for c_idx in eligible_indices:
+                    if corpus_doc_ids[c_idx] in used_random_ids:
+                        continue
+                    if low <= corpus_token_lengths[c_idx] <= high:
+                        chosen_idx = c_idx
+                        chosen_tol = tol
+                        break
+                if chosen_idx is not None:
+                    break
+
+            if chosen_idx is None:
+                raise ValueError(f"No length-matched random negative for {question_id} at rank {rank_idx + 1}")
+
+            used_random_ids.add(corpus_doc_ids[chosen_idx])
+            random_pool.append(corpus_texts[chosen_idx])
+            random_tolerances.append(chosen_tol)
+
+        # 3. Controls (closed-book & oracle)
+        master_prompt_ledger.append({
+            "question_id": question_id,
+            "condition": "closed-book",
+            "seed": 42,
+            "gold_position_index": -1,
+            "rendered_prompt": f"Question: {query}\nAnswer:",
+            "gold_answer": gold_answer,
+        })
+        master_prompt_ledger.append({
+            "question_id": question_id,
+            "condition": "oracle_n=0",
+            "seed": 42,
+            "gold_position_index": 0,
+            "rendered_prompt": (
+                "Instructions: Read the context array carefully. Answer the Query based strictly on inputs.\n"
+                f"[Context 1]: {gold_passage}\n"
+                f"Query: {query}\nAnswer:"
+            ),
+            "gold_answer": gold_answer,
+        })
+
+        # 4. Dosage treatments x 3 seeds
+        for cond in DOSAGE_CONDITIONS:
+            dose = cond["dose"]
+            distractors = [c["text"] for c in hard_negatives[:dose]] if cond["type"] == "hard" else random_pool[:dose]
+            tols = None if cond["type"] == "hard" else random_tolerances[:dose]
+
+            for seed in SEEDS:
+                contexts = [gold_passage] + distractors
+                random.Random(seed).shuffle(contexts)
+                gold_pos = contexts.index(gold_passage)
+
+                prompt = "Instructions: Read the context array carefully. Answer the Query based strictly on inputs.\n"
+                for pos, ctx in enumerate(contexts, start=1):
+                    prompt += f"[Context {pos}]: {ctx}\n"
+                prompt += f"Query: {query}\nAnswer:"
+
+                master_prompt_ledger.append({
+                    "question_id": question_id,
+                    "condition": cond["name"],
+                    "seed": seed,
+                    "gold_position_index": gold_pos,
+                    "rendered_prompt": prompt,
+                    "gold_answer": gold_answer,
+                    "random_length_match_tolerances": tols,
+                })
+
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    with open(output_path, "w", encoding="utf-8") as f:
+        for rec in master_prompt_ledger:
+            f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+
+    print(f"Wrote {len(master_prompt_ledger):,} prompts to {output_path}")
+    return len(master_prompt_ledger)
+
+
+def main():
+    corpus_df = pd.read_json(PARAGRAPHS_PATH, lines=True)
+    faiss_index = faiss.read_index(FAISS_PATH)
+    embed_model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
+
+    compile_prompt_matrix(PILOT_PATH, corpus_df, faiss_index, embed_model, "data/pilot_prompts_unfrozen.jsonl")
+    compile_prompt_matrix(MAIN_PATH, corpus_df, faiss_index, embed_model, "data/prompts_unfrozen.jsonl")
+
+
+if __name__ == "__main__":
+    main()
