@@ -1,0 +1,132 @@
+import json
+import math
+import os
+import re
+import string
+from collections import Counter, defaultdict
+from datetime import datetime, timezone
+import numpy as np
+
+_PUNCT_TRANSLATION = str.maketrans("", "", string.punctuation)
+_ARTICLE_PATTERN = re.compile(r"\b(a|an|the)\b")
+_COMPLIANCE_PATTERN = re.compile(r"^[\w\s\-\,\.\(\)]+$")
+
+
+class SQuADMetricsEngine:
+    """Official SQuAD Exact Match (EM) and token F1 engine (Task T8.2)."""
+
+    @staticmethod
+    def normalize_text(text: str) -> str:
+        text = str(text or "").lower()
+        text = text.translate(_PUNCT_TRANSLATION)
+        text = _ARTICLE_PATTERN.sub(" ", text)
+        return " ".join(text.split())
+
+    @classmethod
+    def calculate_em(cls, prediction: str, ground_truth: str) -> float:
+        return 1.0 if cls.normalize_text(prediction) == cls.normalize_text(ground_truth) else 0.0
+
+    @classmethod
+    def calculate_f1(cls, prediction: str, ground_truth: str) -> float:
+        pred_tokens = cls.normalize_text(prediction).split()
+        gt_tokens = cls.normalize_text(ground_truth).split()
+
+        if not pred_tokens and not gt_tokens:
+            return 1.0
+        if not pred_tokens or not gt_tokens:
+            return 0.0
+
+        common = Counter(pred_tokens) & Counter(gt_tokens)
+        num_same = sum(common.values())
+        if num_same == 0:
+            return 0.0
+
+        precision = num_same / len(pred_tokens)
+        recall = num_same / len(gt_tokens)
+        return 2 * precision * recall / (precision + recall)
+
+
+def run_pilot_acceptance_audit(log_file_path: str, pilot_path: str = "data/pilot_50.jsonl", report_out_path: str = "results/pilot_acceptance_report.json") -> dict:
+    if not os.path.exists(log_file_path):
+        raise FileNotFoundError(f"Run log not found: {log_file_path}")
+
+    pilot_ids = set()
+    if os.path.exists(pilot_path):
+        with open(pilot_path, "r", encoding="utf-8") as f:
+            for line in f:
+                if line.strip():
+                    pilot_ids.add(str(json.loads(line)["question_id"]))
+
+    records = []
+    seen_log_ids = set()
+    with open(log_file_path, "r", encoding="utf-8") as f:
+        for line in f:
+            if not line.strip():
+                continue
+            rec = json.loads(line)
+            if rec.get("log_id") in seen_log_ids:
+                continue
+            seen_log_ids.add(rec.get("log_id"))
+
+            pred = str(rec.get("model_output", "") or "")
+            gt = str(rec.get("ground_truth", "") or "")
+            records.append({
+                "question_id": str(rec["question_id"]),
+                "condition": str(rec["condition"]),
+                "f1": SQuADMetricsEngine.calculate_f1(pred, gt),
+                "em": SQuADMetricsEngine.calculate_em(pred, gt),
+                "format_compliant": bool(pred.strip() and _COMPLIANCE_PATTERN.fullmatch(pred.strip())),
+                "is_mock": pred.startswith("Mocked extraction match for true answer:"),
+            })
+
+    logged_ids = {r["question_id"] for r in records}
+    pilot_logged = logged_ids & pilot_ids
+    audit_records = [r for r in records if r["question_id"] in pilot_logged] if pilot_logged else records
+    scope = "pilot" if pilot_logged else "non-pilot"
+
+    oracle_by_q = defaultdict(list)
+    distracted_by_q = defaultdict(list)
+    for r in audit_records:
+        cond = r["condition"].lower()
+        if "oracle" in cond:
+            oracle_by_q[r["question_id"]].append(r["f1"])
+        elif cond != "closed-book":
+            distracted_by_q[r["question_id"]].append(r["f1"])
+
+    paired_ids = sorted(set(oracle_by_q) & set(distracted_by_q))
+    oracle_means = [float(np.mean(oracle_by_q[q])) for q in paired_ids]
+    distracted_means = [float(np.mean(distracted_by_q[q])) for q in paired_ids]
+
+    format_ratio = float(np.mean([r["format_compliant"] for r in audit_records]))
+    mock_count = sum(r["is_mock"] for r in audit_records)
+
+    oracle_f1 = float(np.mean(oracle_means)) if paired_ids else 0.0
+    distracted_f1 = float(np.mean(distracted_means)) if paired_ids else 0.0
+    headroom_pts = (oracle_f1 - distracted_f1) * 100.0
+
+    can_issue = (scope == "pilot") and (mock_count == 0) and bool(paired_ids)
+    passed = bool(format_ratio >= 0.85 and headroom_pts >= 10.0) if can_issue else None
+
+    report = {
+        "audit_timestamp_utc": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+        "evaluation_scope": scope,
+        "metrics": {
+            "records_audited": len(audit_records),
+            "paired_questions": len(paired_ids),
+            "format_compliance_ratio": round(format_ratio, 4),
+            "oracle_f1": round(oracle_f1, 4),
+            "distracted_f1": round(distracted_f1, 4),
+            "oracle_headroom_points": round(headroom_pts, 4),
+            "mock_outputs_detected": mock_count,
+        },
+        "gate_verdict": {
+            "passed_pilot_acceptance_thresholds": passed,
+            "recommendation": "PROCEED TO MAIN SWEEP" if passed else "HOLD / REVIEW LOGS",
+        },
+    }
+
+    os.makedirs(os.path.dirname(report_out_path) or ".", exist_ok=True)
+    with open(report_out_path, "w", encoding="utf-8") as f:
+        json.dump(report, f, indent=2, ensure_ascii=False)
+
+    return report
