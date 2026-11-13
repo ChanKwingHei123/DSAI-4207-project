@@ -128,8 +128,14 @@ def compute_study_hashes(
     prompt_path: Path | None = None,
     extraction_path: Path | None = None,
     runtime_path: Path | None = None,
+    split: str | None = None,
 ) -> dict[str, str]:
-    """Compute `config_hash`, `prereg_hash`, and `manifest_hash` for result rows."""
+    """Compute `config_hash`, `prereg_hash`, and `manifest_hash` for result rows.
+
+    For `split == "pilot"` (or `"reserve"`), uses `data/sampling/manifest.json` when
+    present. For `split == "main"` (or when `split` is omitted), prefers
+    `data/frozen/manifest.json` when present and falls back to `data/sampling/manifest.json`.
+    """
     p_prereg = prereg_path or (repo_root / "configs" / "prereg.yaml")
     p_prompt = prompt_path or (repo_root / "configs" / "prompt_v1.yaml")
     p_extract = extraction_path or (repo_root / "configs" / "extraction_v1.yaml")
@@ -146,14 +152,24 @@ def compute_study_hashes(
 
     frozen_manifest = repo_root / "data" / "frozen" / "manifest.json"
     sampling_manifest = repo_root / "data" / "sampling" / "manifest.json"
-    if frozen_manifest.exists():
-        manifest_hash = sha256_file(frozen_manifest)
-    elif sampling_manifest.exists():
-        manifest_hash = sha256_file(sampling_manifest)
+    if split in ("pilot", "reserve"):
+        if sampling_manifest.exists():
+            manifest_hash = sha256_file(sampling_manifest)
+        elif frozen_manifest.exists():
+            manifest_hash = sha256_file(frozen_manifest)
+        else:
+            raise FileNotFoundError(
+                f"Neither {sampling_manifest} nor {frozen_manifest} exists to compute manifest_hash."
+            )
     else:
-        raise FileNotFoundError(
-            f"Neither {frozen_manifest} nor {sampling_manifest} exists to compute manifest_hash."
-        )
+        if frozen_manifest.exists():
+            manifest_hash = sha256_file(frozen_manifest)
+        elif sampling_manifest.exists():
+            manifest_hash = sha256_file(sampling_manifest)
+        else:
+            raise FileNotFoundError(
+                f"Neither {frozen_manifest} nor {sampling_manifest} exists to compute manifest_hash."
+            )
 
     return {
         "config_hash": config_hash,
@@ -845,6 +861,33 @@ def resolve_model_id(
     return model_name
 
 
+def resolve_split_input_sources(
+    repo_root: Path,
+    split: str,
+    inputs_dir: Path | None = None,
+) -> tuple[Path, Path | None, bool]:
+    """Resolve `(inputs_dir, split_questions_json, is_frozen_main)` for `split`.
+
+    When `inputs_dir` is omitted, `split == "main"` reads from `data/frozen/` if
+    `data/frozen/manifest.json` exists, falling back to `data/inputs/` and
+    `data/sampling/main.json` otherwise. `split == "pilot"` always reads from
+    `data/inputs/` and `data/sampling/pilot.json`.
+    """
+    if inputs_dir is not None:
+        return inputs_dir, None, False
+
+    if split == "main" and (repo_root / "data" / "frozen" / "manifest.json").exists():
+        frozen_dir = repo_root / "data" / "frozen"
+        return frozen_dir, frozen_dir / "main.json", True
+
+    sampling_file = repo_root / "data" / "sampling" / f"{split}.json"
+    return (
+        repo_root / "data" / "inputs",
+        sampling_file if sampling_file.exists() else None,
+        False,
+    )
+
+
 def run_unit(
     unit: RunUnit,
     backend: Backend,
@@ -882,7 +925,11 @@ def run_unit(
     ):
         raise ValueError("Stub or dry-run output under results/ is strictly forbidden.")
 
-    p_inputs = inputs_dir or (repo_root / "data" / "inputs")
+    p_inputs, split_questions_file, using_frozen_main = resolve_split_input_sources(
+        repo_root=repo_root,
+        split=unit.split,
+        inputs_dir=inputs_dir,
+    )
     p_raw = raw_data_path or (repo_root / "data" / "raw" / "dev-v2.0.json")
     p_prereg = prereg_path or (repo_root / "configs" / "prereg.yaml")
     p_prompt = prompt_path or (repo_root / "configs" / "prompt_v1.yaml")
@@ -900,6 +947,7 @@ def run_unit(
         prompt_path=p_prompt,
         extraction_path=p_extract,
         runtime_path=p_runtime,
+        split=unit.split,
     )
 
     max_new_tokens = int(prereg_cfg["decoding"]["max_new_tokens"])
@@ -909,31 +957,55 @@ def run_unit(
     if unit.condition != "closed_book" and paragraph_lookup is None:
         paragraph_lookup = load_paragraph_lookup(p_raw)
 
-    union_rows = load_seed_independent_rows(p_inputs, unit.split, draw_seeds=draw_seeds)
-    union_count = len(union_rows)
-
-    sampling_split_file = repo_root / "data" / "sampling" / f"{unit.split}.json"
-    if inputs_dir is None and sampling_split_file.exists():
-        expected_split_total = len(json.loads(sampling_split_file.read_text(encoding="utf-8")))
-    else:
-        expected_split_total = union_count
-
-    if unit.is_seed_independent:
-        candidate_rows = union_rows
+    if using_frozen_main:
+        assert split_questions_file is not None
+        if not split_questions_file.exists():
+            raise FileNotFoundError(
+                f"Frozen manifest exists, but {split_questions_file} is missing."
+            )
+        frozen_questions = json.loads(split_questions_file.read_text(encoding="utf-8"))
+        frozen_qids = [str(item["question_id"]) for item in frozen_questions]
+        if unit.is_seed_independent:
+            candidate_rows = load_seed_independent_rows(
+                p_inputs, unit.split, draw_seeds=draw_seeds
+            )
+        else:
+            assert unit.seed is not None
+            candidate_rows = load_split_seed_rows(p_inputs, unit.split, unit.seed)
+        row_qids = [str(r["question_id"]) for r in candidate_rows]
+        if row_qids != frozen_qids:
+            raise ValueError(
+                f"Frozen main inputs mismatch between {split_questions_file} "
+                f"(n={len(frozen_qids)}) and {p_inputs} (n={len(row_qids)})"
+            )
         skipped_missing_seed_rows = 0
     else:
-        assert unit.seed is not None
-        candidate_rows = load_split_seed_rows(p_inputs, unit.split, unit.seed)
-        skipped_missing_seed_rows = max(0, expected_split_total - len(candidate_rows))
-        if skipped_missing_seed_rows > 0:
-            logger.info(
-                "Unit %s: skipped %d (question, seed=%d) pairs excluded by P2c (present=%d, split_total=%d).",
-                unit.unit_id,
-                skipped_missing_seed_rows,
-                unit.seed,
-                len(candidate_rows),
-                expected_split_total,
+        union_rows = load_seed_independent_rows(p_inputs, unit.split, draw_seeds=draw_seeds)
+        union_count = len(union_rows)
+
+        if inputs_dir is None and split_questions_file is not None:
+            expected_split_total = len(
+                json.loads(split_questions_file.read_text(encoding="utf-8"))
             )
+        else:
+            expected_split_total = union_count
+
+        if unit.is_seed_independent:
+            candidate_rows = union_rows
+            skipped_missing_seed_rows = 0
+        else:
+            assert unit.seed is not None
+            candidate_rows = load_split_seed_rows(p_inputs, unit.split, unit.seed)
+            skipped_missing_seed_rows = max(0, expected_split_total - len(candidate_rows))
+            if skipped_missing_seed_rows > 0:
+                logger.info(
+                    "Unit %s: skipped %d (question, seed=%d) pairs excluded by P2c (present=%d, split_total=%d).",
+                    unit.unit_id,
+                    skipped_missing_seed_rows,
+                    unit.seed,
+                    len(candidate_rows),
+                    expected_split_total,
+                )
 
     if max_questions is not None:
         if max_questions < 0:

@@ -372,3 +372,237 @@ def test_cli_exit_code_nonzero_when_env_invalid() -> None:
     )
     assert proc.returncode != 0
     assert "CONDA_DEFAULT_ENV must be 'rag'" in proc.stderr
+
+
+def test_manifest_hash_rules_pilot_vs_main_when_frozen_exists(sandbox_repo: Path) -> None:
+    """When data/frozen/manifest.json exists, pilot accepts sampling hash and main requires frozen hash."""
+    sampling_dir = sandbox_repo / "data" / "sampling"
+    sampling_dir.mkdir(parents=True, exist_ok=True)
+    sampling_manifest = sampling_dir / "manifest.json"
+    sampling_manifest.write_text('{"split_counts": {"pilot": 50, "main": 500}}\n', encoding="utf-8")
+    sampling_hash = sha256_file(sampling_manifest)
+
+    frozen_manifest = sandbox_repo / "data" / "frozen" / "manifest.json"
+    frozen_manifest.write_text('{"final_n": 500}\n', encoding="utf-8")
+    frozen_hash = sha256_file(frozen_manifest)
+    (sandbox_repo / "data" / "frozen" / "manifest.sha256").write_text(
+        f"{frozen_hash}  data/frozen/manifest.json\n",
+        encoding="utf-8",
+    )
+    assert sampling_hash != frozen_hash
+
+    pilot_dir = sandbox_repo / "results" / "pilot"
+    pilot_dir.mkdir(parents=True, exist_ok=True)
+    pilot_file = pilot_dir / "Qwen3-8B__oracle__none__n0__seednone__pilot.jsonl"
+    pilot_file.write_text(
+        json.dumps(
+            {
+                "qid": "p1",
+                "split": "pilot",
+                "config_hash": "c1",
+                "prereg_hash": "p1",
+                "manifest_hash": sampling_hash,
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    main_file = sandbox_repo / "results" / "Qwen3-8B__oracle__none__n0__seednone__main.jsonl"
+    main_file.write_text(
+        json.dumps(
+            {
+                "qid": "m1",
+                "split": "main",
+                "config_hash": "c1",
+                "prereg_hash": "p1",
+                "manifest_hash": frozen_hash,
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    # Valid state passes
+    assert check_invariants(repo_root=sandbox_repo, run_env_check=False) == []
+
+    # Main row using sampling hash (instead of frozen hash) fails
+    main_file.write_text(
+        json.dumps(
+            {
+                "qid": "m1",
+                "split": "main",
+                "config_hash": "c1",
+                "prereg_hash": "p1",
+                "manifest_hash": sampling_hash,
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    errs_main = check_invariants(repo_root=sandbox_repo, run_env_check=False)
+    assert any("manifest_hash mismatch" in e for e in errs_main), errs_main
+
+    # Restore valid main row, tamper pilot row manifest_hash -> fails
+    main_file.write_text(
+        json.dumps(
+            {
+                "qid": "m1",
+                "split": "main",
+                "config_hash": "c1",
+                "prereg_hash": "p1",
+                "manifest_hash": frozen_hash,
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    pilot_file.write_text(
+        json.dumps(
+            {
+                "qid": "p1",
+                "split": "pilot",
+                "config_hash": "c1",
+                "prereg_hash": "p1",
+                "manifest_hash": "deadbeef",
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    errs_pilot = check_invariants(repo_root=sandbox_repo, run_env_check=False)
+    assert any("pilot manifest_hash mismatch" in e for e in errs_pilot), errs_pilot
+
+
+def _run_git(repo: Path, *args: str) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        ["git", "-C", str(repo), *args],
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+
+
+def test_prereg_v1_tag_byte_identity_and_tampering_cli(tmp_path: Path) -> None:
+    """Verify prereg-v1 tag enforces byte-identity across configs and data/frozen/ via CLI."""
+    (tmp_path / "configs").mkdir(parents=True)
+    (tmp_path / "tests").mkdir(parents=True)
+    (tmp_path / "results").mkdir(parents=True)
+    (tmp_path / "data" / "frozen").mkdir(parents=True)
+
+    for rel in (
+        "configs/prereg.yaml",
+        "configs/prompt_v1.yaml",
+        "configs/extraction_v1.yaml",
+        "configs/runtime.yaml",
+        "tests/prereg.sha256",
+        "tests/prompt.sha256",
+        "requirements.txt",
+        "requirements-mac.txt",
+    ):
+        dst = tmp_path / rel
+        shutil.copyfile(REPO_ROOT / rel, dst)
+
+    frozen_main = tmp_path / "data" / "frozen" / "main.json"
+    frozen_seed0 = tmp_path / "data" / "frozen" / "main_seed0.jsonl"
+    frozen_manifest = tmp_path / "data" / "frozen" / "manifest.json"
+    frozen_sha = tmp_path / "data" / "frozen" / "manifest.sha256"
+
+    frozen_main.write_text('[{"question_id": "q1"}]\n', encoding="utf-8")
+    frozen_seed0.write_text('{"question_id": "q1", "seed": 0}\n', encoding="utf-8")
+    manifest_payload = {
+        "final_n": 1,
+        "output_files": {
+            "main": {"path": "data/frozen/main.json", "sha256": sha256_file(frozen_main)},
+            "main_seed0": {
+                "path": "data/frozen/main_seed0.jsonl",
+                "sha256": sha256_file(frozen_seed0),
+            },
+        },
+    }
+    frozen_manifest.write_text(json.dumps(manifest_payload, indent=2) + "\n", encoding="utf-8")
+    frozen_sha.write_text(
+        f"{sha256_file(frozen_manifest)}  data/frozen/manifest.json\n",
+        encoding="utf-8",
+    )
+
+    _run_git(tmp_path, "init")
+    _run_git(tmp_path, "add", ".")
+    _run_git(
+        tmp_path,
+        "-c",
+        "user.name=Test",
+        "-c",
+        "user.email=test@example.invalid",
+        "commit",
+        "-m",
+        "init",
+    )
+    _run_git(
+        tmp_path,
+        "-c",
+        "user.name=Test",
+        "-c",
+        "user.email=test@example.invalid",
+        "tag",
+        "-a",
+        "prereg-v1",
+        "-m",
+        "prereg freeze",
+    )
+
+    cli_cmd = [
+        sys.executable,
+        str(REPO_ROOT / "scripts" / "check_invariants.py"),
+        "--repo-root",
+        str(tmp_path),
+    ]
+
+    # Clean tagged state passes both API and CLI
+    assert check_invariants(repo_root=tmp_path, run_env_check=False) == []
+    ok_proc = subprocess.run(cli_cmd, capture_output=True, text=True, check=False)
+    assert ok_proc.returncode == 0, ok_proc.stderr
+
+    # Each tampered file triggers non-zero failure
+    for rel_tamper, append_text in (
+        ("configs/prereg.yaml", "\n# tampered\n"),
+        ("configs/prompt_v1.yaml", "\n# tampered\n"),
+        ("configs/extraction_v1.yaml", "\n# tampered\n"),
+        ("configs/runtime.yaml", "\n# tampered\n"),
+        ("data/frozen/main.json", "\n"),
+    ):
+        target = tmp_path / rel_tamper
+        orig_bytes = target.read_bytes()
+        try:
+            target.write_bytes(orig_bytes + append_text.encode("utf-8"))
+            errs = check_invariants(repo_root=tmp_path, run_env_check=False)
+            assert any("prereg-v1" in e and rel_tamper in e for e in errs), (
+                f"Expected prereg-v1 error for {rel_tamper}, got {errs}"
+            )
+            fail_proc = subprocess.run(cli_cmd, capture_output=True, text=True, check=False)
+            assert fail_proc.returncode != 0
+        finally:
+            target.write_bytes(orig_bytes)
+
+    # Extra file under data/frozen/ fails
+    extra_file = tmp_path / "data" / "frozen" / "extra.txt"
+    extra_file.write_text("extra\n", encoding="utf-8")
+    try:
+        errs_extra = check_invariants(repo_root=tmp_path, run_env_check=False)
+        assert any("Extra working-tree file" in e and "extra.txt" in e for e in errs_extra), errs_extra
+        assert subprocess.run(cli_cmd, capture_output=True, text=True, check=False).returncode != 0
+    finally:
+        extra_file.unlink()
+
+    # Missing file under data/frozen/ fails
+    orig_seed0 = frozen_seed0.read_bytes()
+    frozen_seed0.unlink()
+    try:
+        errs_missing = check_invariants(repo_root=tmp_path, run_env_check=False)
+        assert any(
+            "Missing working-tree file" in e and "main_seed0.jsonl" in e for e in errs_missing
+        ), errs_missing
+        assert subprocess.run(cli_cmd, capture_output=True, text=True, check=False).returncode != 0
+    finally:
+        frozen_seed0.write_bytes(orig_seed0)
+
